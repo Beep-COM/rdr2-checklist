@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>RDR2 Story Missions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Zilla+Slab:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#d3c6a0; --paper-hi:#e3d9b9; --edge:#6f5c3a;
+  --ink:#2a2117; --ink-soft:#574833; --trail:rgba(42,33,23,.5); --tint:rgba(42,33,23,.07);
+  --gold:#e2b43a; --gold-ink:#7a5808; --water:#6c8789;
+  --bar:#221c14; --bar-ink:#e6dbbb;
+  --noise-op:.38; --edge-op:.55;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#2b281f; --paper-hi:#38342a; --edge:#0d0b07;
+    --ink:#e8dec2; --ink-soft:#b3a789; --trail:rgba(232,222,194,.42); --tint:rgba(232,222,194,.07);
+    --gold:#e6b93e; --gold-ink:#e6b93e; --water:#5b7b82;
+    --bar:#0f0d09; --bar-ink:#cfc4a6;
+    --noise-op:.22; --edge-op:.8;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#2b281f; --paper-hi:#38342a; --edge:#0d0b07;
+  --ink:#e8dec2; --ink-soft:#b3a789; --trail:rgba(232,222,194,.42); --tint:rgba(232,222,194,.07);
+  --gold:#e6b93e; --gold-ink:#e6b93e; --water:#5b7b82;
+  --bar:#0f0d09; --bar-ink:#cfc4a6;
+  --noise-op:.22; --edge-op:.8;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);background:var(--paper)}
+body{
+  margin:0;min-height:100%;display:flex;flex-direction:column;
+  font-family:'Zilla Slab',Georgia,'Times New Roman',serif;
+  font-size:17px;line-height:1.4;color:var(--ink);background:var(--paper);
+  -webkit-text-size-adjust:100%;
+}
+
+/* ---------- the map sheet behind everything ---------- */
+.sheet{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 70% at 38% 28%,var(--paper-hi),var(--paper) 72%)}
+.sheet svg{position:absolute;inset:0;width:100%;height:100%}
+.sheet .c{fill:none;stroke:var(--ink);stroke-opacity:.11;stroke-width:1.4}
+.sheet .river{fill:none;stroke:var(--water);stroke-opacity:.55;stroke-width:7;stroke-linecap:round}
+.sheet .creek{fill:none;stroke:var(--water);stroke-opacity:.5;stroke-width:3;stroke-linecap:round}
+.sheet .rail{fill:none;stroke:var(--ink);stroke-opacity:.3;stroke-width:2.4}
+.sheet .ties{fill:none;stroke:var(--ink);stroke-opacity:.26;stroke-width:10;stroke-dasharray:1.6 11}
+.sheet .border{fill:none;stroke:var(--ink);stroke-opacity:.28;stroke-width:1.6;stroke-dasharray:14 6 2 6}
+.sheet::before{content:"";position:absolute;inset:0;opacity:var(--noise-op);mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .28  0 0 0 0 .2  0 0 0 0 .1  0 0 0 .9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+.sheet::after{content:"";position:absolute;inset:0;opacity:var(--edge-op);
+  background:radial-gradient(ellipse 95% 90% at 50% 45%,transparent 58%,var(--edge) 135%)}
+
+/* ---------- header ---------- */
+.wrap{width:100%;max-width:780px;margin:0 auto;padding:0 18px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;
+  background:var(--paper);
+  background:color-mix(in srgb,var(--paper) 93%,transparent);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--trail)}
+.top-in{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;padding-top:16px;padding-bottom:12px}
+.game{margin:0;font:italic 1rem/1.2 'IM Fell English',Georgia,serif;color:var(--ink-soft)}
+h1{margin:2px 0 0;font:400 clamp(1.45rem,5vw,2rem)/1.1 'IM Fell English SC','IM Fell English',Georgia,serif;letter-spacing:.14em}
+.total{flex:0 1 270px;min-width:210px}
+.tline{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.tline b{font-weight:600;font-size:1.9rem;line-height:1;font-variant-numeric:tabular-nums}
+.tline .of{font:italic .98rem/1.2 'IM Fell English',Georgia,serif;color:var(--ink-soft)}
+.tline .pct{font-size:.95rem;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.meter{position:relative;height:12px;margin:7px 7px 0;
+  background:repeating-linear-gradient(90deg,var(--trail) 0 3px,transparent 3px 7px) center/100% 2px no-repeat}
+.meter i{position:absolute;left:0;top:50%;height:2px;margin-top:-1px;width:0;background:var(--ink)}
+.meter i::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;
+  background:var(--gold);border:2px solid var(--ink)}
+
+.tabwrap{display:flex;align-items:stretch}
+.tabs{flex:1;min-width:0;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabnav{flex:none;width:30px;margin-bottom:4px;background:var(--tint);border:0;border-radius:2px;color:var(--ink);
+  font:400 1.6rem/1 'Zilla Slab',Georgia,serif;cursor:pointer}
+.tabnav:hover{background:var(--trail);color:var(--paper-hi)}
+.tab{flex:none;position:relative;padding:8px 13px 10px;background:none;border:0;border-radius:2px 2px 0 0;
+  color:var(--ink-soft);font:500 1rem/1.2 'Zilla Slab',Georgia,serif;text-align:left;white-space:nowrap;cursor:pointer}
+.tab .cnt{display:block;margin-top:1px;font:italic .92rem/1.2 'IM Fell English',Georgia,serif;font-variant-numeric:lining-nums tabular-nums}
+.tab:hover{background:var(--tint);color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);font-weight:600}
+.tab[aria-selected="true"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:3px;background:var(--ink)}
+.tab.full .cnt{color:var(--gold-ink);font-weight:600}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+
+/* ---------- main ---------- */
+main{position:relative;z-index:1;flex:1}
+.tools{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;padding-top:14px}
+.tool{padding:4px 11px;border:1px solid var(--trail);border-radius:2px;background:none;color:var(--ink);
+  font:400 .92rem/1.3 'Zilla Slab',Georgia,serif;cursor:pointer}
+.tool:hover{background:var(--tint)}
+.tool[aria-pressed="true"]{background:var(--ink);color:var(--paper-hi);border-color:var(--ink)}
+.tool:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.panel{padding-top:18px}
+.region h2{margin:0;font:400 clamp(1.9rem,7.6vw,3.7rem)/1.08 'IM Fell English SC','IM Fell English',Georgia,serif;
+  letter-spacing:.2em;word-spacing:.12em;color:var(--ink);opacity:.9;text-wrap:balance}
+.region p{margin:10px 0 0;font:italic 1.1rem/1.3 'IM Fell English',Georgia,serif;color:var(--ink-soft)}
+.region{padding-bottom:14px;border-bottom:2px dotted var(--trail)}
+
+/* ---------- the trail ---------- */
+.list{list-style:none;margin:10px 0 56px;padding:0}
+.list li{position:relative}
+.list li::before,.list li::after{content:"";position:absolute;left:23px;width:0;border-left:2px dotted var(--trail);z-index:2;pointer-events:none}
+.list li::before{top:0;height:50%}
+.list li::after{top:50%;bottom:0}
+.list li.first::before,.list li.last::after{display:none}
+.list li.done::after{border-left:2px solid var(--ink)}
+.list:not(.hiding) li.done + li::before{border-left:2px solid var(--ink)}
+
+.row{position:relative;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;column-gap:14px;
+  width:100%;padding:11px 10px;margin:0;background:none;border:0;border-radius:2px;color:inherit;font:inherit;text-align:left;
+  cursor:pointer;-webkit-tap-highlight-color:transparent}
+.row:hover{background:var(--tint)}
+.row:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.name{display:block;font-weight:500;font-size:1.13rem;line-height:1.25}
+.giver{display:block;margin-top:2px;font:italic 1rem/1.25 'IM Fell English',Georgia,serif;color:var(--ink-soft)}
+.num{font-size:.95rem;color:var(--ink-soft);opacity:.85;font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.blip{position:relative;z-index:3;width:28px;height:28px;display:grid;place-items:center}
+.shape{position:absolute;inset:3px;border-radius:50%;background:var(--paper-hi);border:2px solid var(--ink);
+  transition:background-color .15s,box-shadow .15s}
+.honor .shape{border-radius:3px;transform:rotate(45deg) scale(.86)}
+.blip svg{position:relative;width:14px;height:14px;fill:none;stroke:var(--paper-hi);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .12s}
+.next .shape{background:var(--gold);box-shadow:0 0 0 4px rgba(226,180,58,.38)}
+.next .name{font-weight:600}
+.done .shape{background:var(--ink);box-shadow:none}
+.done .blip svg{opacity:1}
+.done .name{color:var(--ink-soft);text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:var(--trail)}
+
+.empty{margin:28px 0 56px;font:italic 1.15rem/1.4 'IM Fell English',Georgia,serif;color:var(--ink-soft)}
+
+/* ---------- bottom prompt bar ---------- */
+.bar{position:relative;z-index:20;background:var(--bar);color:var(--bar-ink);border-top:1px solid rgba(255,255,255,.08)}
+.bar-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 28px;padding-top:10px;padding-bottom:10px;font-size:.93rem}
+.legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px}
+.legend li{display:flex;align-items:center;gap:7px}
+.lg{display:inline-block;width:13px;height:13px;border:2px solid var(--bar-ink);border-radius:50%;background:transparent}
+.lg.dia{border-radius:2px;transform:rotate(45deg) scale(.82)}
+.lg.gold{background:var(--gold);border-color:var(--bar-ink)}
+.lg.done{background:var(--bar-ink)}
+.hints{display:flex;gap:16px;opacity:.85}
+.hint{display:flex;align-items:center;gap:4px}
+.key{display:inline-block;min-width:1.7em;padding:0 .35em;border:1px solid currentColor;border-radius:3px;font-size:.8rem;line-height:1.5;text-align:center}
+@media (min-width:720px){ .bar{position:sticky;bottom:0} }
+@media (hover:none),(max-width:719px){ .hints{display:none} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;scroll-behavior:auto!important} }
+</style>
+</head>
+<body>
+
+<div class="sheet" aria-hidden="true">
+  <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <path id="blob" vector-effect="non-scaling-stroke" d="M-200 -20 C-190 -140 -60 -210 60 -160 C170 -115 215 -10 150 80 C80 175 -90 170 -160 80 C-190 40 -200 10 -200 -20 Z"/>
+    </defs>
+    <g class="c" transform="translate(290 330)">
+      <use href="#blob"/><use href="#blob" transform="scale(.82) rotate(6)"/><use href="#blob" transform="scale(.64) rotate(12)"/><use href="#blob" transform="scale(.46) rotate(18)"/><use href="#blob" transform="scale(.28) rotate(24)"/>
+    </g>
+    <g class="c" transform="translate(1320 780) scale(1.2) rotate(160)">
+      <use href="#blob"/><use href="#blob" transform="scale(.82) rotate(6)"/><use href="#blob" transform="scale(.64) rotate(12)"/><use href="#blob" transform="scale(.46) rotate(18)"/><use href="#blob" transform="scale(.28) rotate(24)"/>
+    </g>
+    <g class="c" transform="translate(1000 130) scale(.75) rotate(40)">
+      <use href="#blob"/><use href="#blob" transform="scale(.8) rotate(8)"/><use href="#blob" transform="scale(.6) rotate(16)"/><use href="#blob" transform="scale(.4) rotate(24)"/>
+    </g>
+    <g class="c" transform="translate(200 880) scale(.6) rotate(-20)">
+      <use href="#blob"/><use href="#blob" transform="scale(.78) rotate(8)"/><use href="#blob" transform="scale(.56) rotate(16)"/>
+    </g>
+    <path class="border" d="M300 -20 C330 200 520 300 560 520 C600 740 480 860 520 1040"/>
+    <path class="river" d="M1180 -20 C1130 120 1260 200 1190 330 C1120 460 1010 470 1040 600 C1070 730 1230 760 1170 900 C1140 970 1100 1010 1090 1040"/>
+    <path class="creek" d="M1040 600 C930 590 860 650 790 640"/>
+    <path class="rail" d="M-20 760 C250 720 420 840 700 800 C980 760 1100 850 1400 790 C1500 770 1560 780 1640 760"/>
+    <path class="ties" d="M-20 760 C250 720 420 840 700 800 C980 760 1100 850 1400 790 C1500 770 1560 780 1640 760"/>
+  </svg>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-in">
+      <div>
+        <p class="game">Red Dead Redemption 2</p>
+        <h1>Story Missions</h1>
+      </div>
+      <div class="total">
+        <div class="tline">
+          <span><b id="tDone">0</b> <span class="of" id="tOf">of 110 complete</span></span>
+          <span class="pct" id="tPct">0%</span>
+        </div>
+        <div class="meter" id="meter" role="progressbar" aria-label="Story missions completed" aria-valuemin="0" aria-valuemax="110" aria-valuenow="0"><i id="meterFill"></i></div>
+      </div>
+    </div>
+    <div class="tabwrap">
+      <button class="tabnav" id="tabPrev" type="button" aria-label="Scroll chapters left" tabindex="-1" hidden>&#8249;</button>
+      <div class="tabs" id="tabs" role="tablist" aria-label="Chapters"></div>
+      <button class="tabnav" id="tabNext" type="button" aria-label="Scroll chapters right" tabindex="-1">&#8250;</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="tools">
+      <button class="tool" id="hide" type="button" aria-pressed="false">Hide completed</button>
+      <button class="tool" id="reset" type="button">Reset progress</button>
+    </div>
+    <div id="panels"></div>
+  </div>
+</main>
+
+<footer class="bar">
+  <div class="wrap">
+    <div class="bar-in">
+      <ul class="legend" aria-label="Legend">
+        <li><i class="lg"></i>Story mission</li>
+        <li><i class="lg dia"></i>Optional honor mission (missable)</li>
+        <li><i class="lg gold"></i>Next up</li>
+        <li><i class="lg done"></i>Completed</li>
+      </ul>
+      <div class="hints" aria-hidden="true">
+        <span class="hint"><span class="key">←</span><span class="key">→</span>Chapter</span>
+        <span class="hint"><span class="key">↑</span><span class="key">↓</span>Mission</span>
+        <span class="hint"><span class="key">Space</span>Check off</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* [title, mission giver, flag]  h = optional honor mission, s = Special Edition only */
+  var DATA = [
+    {name:'Colter', kind:'Chapter one', items:[
+      ['Outlaws from the West','Dutch van der Linde'],
+      ['Enter, Pursued by a Memory','Abigail Roberts'],
+      ['The Aftermath of Genesis','Mr. Pearson'],
+      ['Old Friends','Bill Williamson'],
+      ['Who the Hell Is Leviticus Cornwall?','Dutch van der Linde'],
+      ['Eastward Bound','Dutch van der Linde']
+    ]},
+    {name:'Horseshoe Overlook', kind:'Chapter two', items:[
+      ['Polite Society, Valentine Style','Uncle'],
+      ['Americans at Rest','Javier Escuella'],
+      ['Who Is Not Without Sin','Reverend Swanson'],
+      ['Exit Pursued by a Bruised Ego','Hosea Matthews'],
+      ['The First Shall Be Last','Javier Escuella'],
+      ['Paying a Social Call','Kieran Duffy'],
+      ['A Quiet Time','Dutch van der Linde'],
+      ['Blessed Are the Meek?','Micah Bell'],
+      ['Good, Honest, Snake Oil','Curtis Malloy','h'],
+      ['We Loved Once and True (I, II & III)','Mary Linton','h'],
+      ['Money Lending and Other Sins, I & II','Leopold Strauss','h'],
+      ['Money Lending and Other Sins, III','Leopold Strauss'],
+      ['The Spines of America','Hosea Matthews'],
+      ['Pouring Forth Oil, I & II','John Marston','h'],
+      ['A Fisher of Men','Abigail Roberts'],
+      ['Pouring Forth Oil, III & IV','John Marston'],
+      ['An American Pastoral Scene','Micah Bell'],
+      ['The Sheep and the Goats','John Marston'],
+      ['A Strange Kindness','Dutch van der Linde']
+    ]},
+    {name:'Clemens Point', kind:'Chapter three', items:[
+      ['The New South','Dutch van der Linde'],
+      ['Further Questions of Female Suffrage','Mr. Pearson'],
+      ['Money Lending and Other Sins, IV','Leopold Strauss','h'],
+      ['American Distillation','Dutch van der Linde'],
+      ['The Course of True Love, I & II','Beau Gray','h'],
+      ['The Course of True Love, III','Penelope Braithwaite','h'],
+      ['Advertising, the New American Art (I & II)','Hosea Matthews'],
+      ['Horse Flesh for Dinner','John Marston'],
+      ['The Fine Joys of Tobacco','Hosea Matthews'],
+      ['Magicians for Sport','Dutch van der Linde'],
+      ['Friends in Very Low Places','Josiah Trelawny'],
+      ['An Honest Mistake','Molly O\u2019Shea'],
+      ['Preaching Forgiveness As He Went','Lenny Summers'],
+      ['Sodom? Back to Gomorrah','Bill Williamson'],
+      ['Blessed Are the Peacemakers','Micah Bell'],
+      ['A Short Walk in a Pretty Town','Bill Williamson'],
+      ['Blood Feuds, Ancient and Modern','Dutch van der Linde'],
+      ['The Battle of Shady Belle','']
+    ]},
+    {name:'Saint Denis', kind:'Chapter four', items:[
+      ['The Joys of Civilization','Dutch van der Linde'],
+      ['Angelo Bronte, a Man of Honor','Dutch van der Linde'],
+      ['Money Lending and Other Sins, V','Leopold Strauss','h'],
+      ['Help a Brother Out','Brother Dorkins','h'],
+      ['Brothers and Sisters, One and All','Brother Dorkins','h'],
+      ['Fatherhood and Other Dreams (I & II)','Mary Linton','h'],
+      ['No, No and Thrice, No','Mary-Beth Gaskill'],
+      ['The Gilded Cage','Hosea Matthews'],
+      ['American Fathers (I & II)','Eagle Flies'],
+      ['A Fine Night of Debauchery','Josiah Trelawny'],
+      ['High and Low Finance','Charles Smith','s'],
+      ['Horsemen, Apocalypses','Sadie Adler'],
+      ['Urban Pleasures','Dutch van der Linde'],
+      ['Country Pursuits','Dutch van der Linde'],
+      ['Revenge Is a Dish Best Eaten','Dutch van der Linde'],
+      ['Banking, the Old American Art','Dutch van der Linde']
+    ]},
+    {name:'Guarma', kind:'Chapter five', items:[
+      ['Welcome to the New World',''],
+      ['Savagery Unleashed',''],
+      ['A Kind and Benevolent Despot','Dutch van der Linde'],
+      ['Hell Hath No Fury',''],
+      ['Paradise Mercifully Departed',''],
+      ['Dear Uncle Tacitus',''],
+      ['Fleeting Joy',''],
+      ['A Fork in the Road',''],
+      ['That\u2019s Murfree Country','Dutch van der Linde']
+    ]},
+    {name:'Beaver Hollow', kind:'Chapter six', items:[
+      ['Icarus and Friends','Sadie Adler'],
+      ['Visiting Hours','Sadie Adler'],
+      ['Just a Social Call','Micah Bell'],
+      ['Do Not Seek Absolution, I','Edith Downes','h'],
+      ['Do Not Seek Absolution, II','Edith Downes','h'],
+      ['Of Men and Angels','Sister Calder\u00f3n','h'],
+      ['The Course of True Love, IV & V','Penelope Braithwaite','h'],
+      ['Money Lending and Other Sins, VI & VII','Leopold Strauss','h'],
+      ['The Delights of Van Horn','Micah Bell'],
+      ['The Bridge to Nowhere','John Marston'],
+      ['A Rage Unleashed','Reverend Swanson'],
+      ['Archeology for Beginners','Rains Fall','h'],
+      ['Honor, Amongst Thieves','Captain Lyndon Monroe','h'],
+      ['The Fine Art of Conversation','Josiah Trelawny'],
+      ['Goodbye, Dear Friend','Sadie Adler'],
+      ['Mrs. Sadie Adler, Widow (I & II)','Sadie Adler','h'],
+      ['Favored Sons','Eagle Flies'],
+      ['The King\u2019s Son','Charles Smith'],
+      ['My Last Boy','Dutch van der Linde'],
+      ['Our Best Selves','Dutch van der Linde'],
+      ['Red Dead Redemption','']
+    ]},
+    {name:'Pronghorn Ranch', kind:'Epilogue, part one', items:[
+      ['The Wheel',''],
+      ['Simple Pleasures','Tom Dickens'],
+      ['Farming, for Beginners','Tom Dickens'],
+      ['Fatherhood, for Beginners','David Geddes'],
+      ['Old Habits',''],
+      ['Jim Milton Rides, Again?','David Geddes'],
+      ['Fatherhood, for Idiots','Abigail Roberts'],
+      ['Motherhood',''],
+      ['Gainful Employment','Sadie Adler'],
+      ['The Landowning Classes / Home of the Gentry?','Ansel Atherton']
+    ]},
+    {name:'Beecher\u2019s Hope', kind:'Epilogue, part two', items:[
+      ['Bare Knuckle Friendships','Uncle'],
+      ['Home Improvement for Beginners','Uncle'],
+      ['An Honest Day\u2019s Labors','Sadie Adler'],
+      ['The Tool Box','Albert Cakes'],
+      ['A New Jerusalem','Uncle'],
+      ['A Quick Favor for an Old Friend','Uncle'],
+      ['Uncle\u2019s Bad Day','Uncle'],
+      ['Trying Again','Jack Marston'],
+      ['A Really Big Bastard','Abigail Roberts'],
+      ['A New Future Imagined','Abigail Roberts'],
+      ['American Venom','Sadie Adler']
+    ]}
+  ];
+
+  var KEY = 'rdr2-story-checklist-v1';
+  var state = {done:{}, chapter:null, hide:false};
+  var TOTAL = 0;
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(!raw) return;
+      var p = JSON.parse(raw);
+      if(p && typeof p === 'object'){
+        if(p.done && typeof p.done === 'object') state.done = p.done;
+        if(typeof p.chapter === 'number') state.chapter = p.chapter;
+        state.hide = !!p.hide;
+      }
+    }catch(e){}
+  }
+  var remoteDoc = null, remoteTimer = null;
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+    if(!remoteDoc) return;
+    clearTimeout(remoteTimer);
+    remoteTimer = setTimeout(function(){
+      try{
+        remoteDoc.set({done:Object.keys(state.done), chapter:state.chapter == null ? 0 : state.chapter, hide:!!state.hide}).catch(function(){});
+      }catch(e){}
+    }, 400);
+  }
+  function el(tag, cls, text){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(text != null) n.textContent = text;
+    return n;
+  }
+
+  var tabsEl = document.getElementById('tabs');
+  var panelsEl = document.getElementById('panels');
+  var hideBtn = document.getElementById('hide');
+  var resetBtn = document.getElementById('reset');
+  var CH = [];
+  var counter = 0, tcount = 0;
+
+  DATA.forEach(function(c, ci){
+    var ch = {name:c.name, kind:c.kind, items:[]};
+
+    var tab = el('button','tab');
+    tab.type = 'button';
+    tab.id = 't'+ci;
+    tab.setAttribute('role','tab');
+    tab.setAttribute('aria-controls','p'+ci);
+    tab.appendChild(el('span','nm',c.name));
+    ch.tabCnt = el('span','cnt','');
+    tab.appendChild(ch.tabCnt);
+    tab.addEventListener('click', function(){ select(ci,{top:true}); });
+    tabsEl.appendChild(tab);
+    ch.tab = tab;
+
+    var panel = el('section','panel');
+    panel.id = 'p'+ci;
+    panel.setAttribute('role','tabpanel');
+    panel.setAttribute('aria-labelledby','t'+ci);
+    panel.hidden = true;
+
+    var region = el('div','region');
+    region.appendChild(el('h2', null, c.name));
+    var sub = el('p');
+    sub.appendChild(document.createTextNode(c.kind + ', '));
+    ch.countEl = el('span');
+    sub.appendChild(ch.countEl);
+    sub.appendChild(document.createTextNode(' complete'));
+    region.appendChild(sub);
+    panel.appendChild(region);
+
+    var list = el('ol','list');
+    c.items.forEach(function(r){
+      var it;
+      if(c.task){ tcount++; it = {id:'t'+tcount}; }
+      else { counter++; it = {id:'m'+counter, num:counter}; }
+      var li = el('li', r[2]==='h' ? 'honor' : '');
+      var btn = el('button','row');
+      btn.type = 'button';
+      btn.setAttribute('role','checkbox');
+      btn.setAttribute('aria-checked','false');
+
+      var blip = el('span','blip');
+      blip.appendChild(el('span','shape'));
+      blip.insertAdjacentHTML('beforeend','<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.4l3 3 6-6.6"/></svg>');
+      btn.appendChild(blip);
+
+      var txt = el('span','txt');
+      it.nxt = el('span','sr','Next up: ');
+      it.nxt.hidden = true;
+      var name = el('span','name');
+      name.appendChild(it.nxt);
+      name.appendChild(document.createTextNode(r[0]));
+      txt.appendChild(name);
+      var giver = r[1];
+      if(r[2]==='h') giver = (giver ? giver + ', ' : '') + 'optional honor mission';
+      if(r[2]==='s') giver = (giver ? giver + ', ' : '') + 'Special Edition only';
+      if(giver) txt.appendChild(el('span','giver',giver));
+      btn.appendChild(txt);
+
+      var num = el('span','num', c.task ? '' : String(counter));
+      num.setAttribute('aria-hidden','true');
+      btn.appendChild(num);
+
+      btn.addEventListener('click', function(){ toggle(it, ch); });
+      li.appendChild(btn);
+      list.appendChild(li);
+      it.li = li; it.btn = btn;
+      ch.items.push(it);
+    });
+    panel.appendChild(list);
+    ch.list = list;
+
+    ch.empty = el('p','empty','Every mission here is checked off. Pick another chapter, or show completed missions to see the trail again.');
+    ch.empty.hidden = true;
+    panel.appendChild(ch.empty);
+
+    panelsEl.appendChild(panel);
+    ch.panel = panel;
+    CH.push(ch);
+  });
+  TOTAL = counter + tcount;
+  document.getElementById('tOf').textContent = 'of ' + TOTAL + ' complete';
+  document.getElementById('meter').setAttribute('aria-valuemax', TOTAL);
+
+  function visibleRows(ch){
+    return ch.items.filter(function(it){ return !it.li.hidden; });
+  }
+
+  function toggle(it, ch){
+    var nowDone = !state.done[it.id];
+    if(nowDone){
+      state.done[it.id] = 1;
+      if(state.hide){
+        var rows = visibleRows(ch);
+        var i = rows.indexOf(it);
+        var target = rows[i+1] || rows[i-1];
+        if(target) target.btn.focus(); else ch.tab.focus();
+      }
+    } else {
+      delete state.done[it.id];
+    }
+    save();
+    updateAll();
+    if(nowDone && ch.items.every(function(x){ return state.done[x.id]; })){
+      var ci = CH.indexOf(ch);
+      if(ci < CH.length-1 && state.chapter === ci){
+        setTimeout(function(){ if(state.chapter === ci) select(ci+1,{top:true}); }, 450);
+      }
+    }
+  }
+
+  function updateAll(){
+    var total = 0;
+    CH.forEach(function(c){
+      var d = 0, nextSet = false, vis = [];
+      c.items.forEach(function(it){
+        var isDone = !!state.done[it.id];
+        if(isDone) d++;
+        var hide = state.hide && isDone;
+        var isNext = !isDone && !nextSet;
+        if(isNext) nextSet = true;
+        it.li.classList.toggle('done', isDone);
+        it.li.classList.toggle('next', isNext);
+        it.li.classList.remove('first','last');
+        it.li.hidden = hide;
+        it.btn.setAttribute('aria-checked', isDone ? 'true' : 'false');
+        it.nxt.hidden = !isNext;
+        if(!hide) vis.push(it.li);
+      });
+      if(vis.length){
+        vis[0].classList.add('first');
+        vis[vis.length-1].classList.add('last');
+      }
+      c.list.classList.toggle('hiding', state.hide);
+      c.empty.hidden = vis.length > 0;
+      c.countEl.textContent = d + ' of ' + c.items.length;
+      c.tabCnt.textContent = d + ' / ' + c.items.length;
+      c.tab.classList.toggle('full', d === c.items.length);
+      total += d;
+    });
+    var pct = Math.round(total / TOTAL * 100);
+    document.getElementById('tDone').textContent = total;
+    document.getElementById('tPct').textContent = pct + '%';
+    document.getElementById('meterFill').style.width = (total / TOTAL * 100) + '%';
+    document.getElementById('meter').setAttribute('aria-valuenow', total);
+    hideBtn.setAttribute('aria-pressed', state.hide ? 'true' : 'false');
+  }
+
+  function select(ci, opts){
+    opts = opts || {};
+    ci = Math.max(0, Math.min(CH.length-1, ci));
+    CH.forEach(function(c, i){
+      var on = i === ci;
+      c.tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      c.tab.tabIndex = on ? 0 : -1;
+      c.panel.hidden = !on;
+    });
+    state.chapter = ci;
+    save();
+    try{ CH[ci].tab.scrollIntoView({inline:'nearest', block:'nearest'}); }catch(e){}
+    if(opts.focusTab) CH[ci].tab.focus();
+    if(opts.top) window.scrollTo(0,0);
+  }
+
+  var tabPrev = document.getElementById('tabPrev');
+  var tabNext = document.getElementById('tabNext');
+  function navState(){
+    var max = tabsEl.scrollWidth - tabsEl.clientWidth;
+    tabPrev.hidden = tabsEl.scrollLeft <= 2;
+    tabNext.hidden = tabsEl.scrollLeft >= max - 2;
+  }
+  function nudge(dir){
+    tabsEl.scrollBy({left: dir * Math.max(160, tabsEl.clientWidth * 0.6), behavior: 'smooth'});
+  }
+  tabPrev.addEventListener('click', function(){ nudge(-1); });
+  tabNext.addEventListener('click', function(){ nudge(1); });
+  tabsEl.addEventListener('scroll', navState, {passive:true});
+  window.addEventListener('resize', navState);
+  window.addEventListener('load', navState);
+  tabsEl.addEventListener('wheel', function(e){
+    if(Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    var max = tabsEl.scrollWidth - tabsEl.clientWidth;
+    if(max <= 0) return;
+    var goingRight = e.deltaY > 0;
+    if((goingRight && tabsEl.scrollLeft >= max - 1) || (!goingRight && tabsEl.scrollLeft <= 0)) return;
+    tabsEl.scrollLeft += e.deltaY;
+    e.preventDefault();
+  }, {passive:false});
+  setTimeout(navState, 0);
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(navState); }
+
+  hideBtn.addEventListener('click', function(){
+    state.hide = !state.hide;
+    save();
+    updateAll();
+  });
+
+  var resetTimer = null;
+  function disarm(){
+    clearTimeout(resetTimer);
+    resetBtn.removeAttribute('data-arm');
+    resetBtn.textContent = 'Reset progress';
+  }
+  resetBtn.addEventListener('click', function(){
+    if(resetBtn.getAttribute('data-arm')){
+      disarm();
+      state.done = {};
+      save();
+      updateAll();
+    } else {
+      resetBtn.setAttribute('data-arm','1');
+      resetBtn.textContent = 'Press again to clear everything';
+      resetTimer = setTimeout(disarm, 4000);
+    }
+  });
+  resetBtn.addEventListener('blur', disarm);
+
+  document.addEventListener('keydown', function(e){
+    if(e.altKey || e.ctrlKey || e.metaKey) return;
+    var k = e.key;
+    var a = document.activeElement;
+    if(k === 'ArrowLeft' || k === 'ArrowRight'){
+      var cur = state.chapter == null ? 0 : state.chapter;
+      var next = cur + (k === 'ArrowRight' ? 1 : -1);
+      if(next < 0 || next > CH.length-1) return;
+      e.preventDefault();
+      select(next, {focusTab: !!(a && a.classList.contains('tab'))});
+    } else if((k === 'ArrowDown' || k === 'ArrowUp') && a && a.classList.contains('row')){
+      var ch = CH[state.chapter];
+      var rows = visibleRows(ch);
+      var idx = -1;
+      rows.forEach(function(it, i){ if(it.btn === a) idx = i; });
+      var t = rows[idx + (k === 'ArrowDown' ? 1 : -1)];
+      if(t){ e.preventDefault(); t.btn.focus(); }
+    }
+  });
+
+  load();
+  /* validate stored progress */
+  var valid = {};
+  CH.forEach(function(c){ c.items.forEach(function(it){ valid[it.id] = 1; }); });
+  Object.keys(state.done).forEach(function(k){ if(!valid[k]) delete state.done[k]; });
+
+  var start = state.chapter;
+  if(typeof start !== 'number' || start < 0 || start > CH.length-1){
+    start = 0;
+    for(var i = 0; i < CH.length; i++){
+      if(CH[i].items.some(function(it){ return !state.done[it.id]; })){ start = i; break; }
+    }
+  }
+  updateAll();
+  select(start);
+
+  /* Account-backed progress: survives cleared browser data and syncs across devices */
+  (async function(){
+    try{
+      if(!window.claude || !window.claude.use) return;
+      var db = await window.claude.use('db');
+      var user = await window.claude.use('user');
+      if(!db || !user) return;
+      var uid = await user.id();
+      if(!uid) return;
+      var ref = db.doc('data/users/' + uid + '/progress');
+      var snap = await ref.get();
+      if(snap.exists){
+        var d = snap.data() || {};
+        var done = {};
+        (Array.isArray(d.done) ? d.done : []).forEach(function(k){ if(valid[k]) done[k] = 1; });
+        state.done = done;
+        state.hide = !!d.hide;
+        if(typeof d.chapter === 'number') state.chapter = d.chapter;
+        remoteDoc = ref;
+        try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+        updateAll();
+        select(typeof state.chapter === 'number' ? state.chapter : 0);
+      } else {
+        remoteDoc = ref;
+        save();
+      }
+    }catch(e){}
+  })();
+})();
+</script>
+</body>
+</html>
