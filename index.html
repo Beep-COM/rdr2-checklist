@@ -119,10 +119,10 @@ main{position:relative;z-index:1;flex:1}
 .list li::after{top:50%;bottom:0}
 .list li.first::before,.list li.last::after{display:none}
 .list li.done::after{border-left:2px solid var(--ink)}
-.list:not(.hiding) li.done + li::before{border-left:2px solid var(--ink)}
+.list li.prevdone::before{border-left:2px solid var(--ink)}
 
 .row{position:relative;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;column-gap:14px;
-  width:100%;padding:11px 10px;margin:0;background:none;border:0;border-radius:2px;color:inherit;font:inherit;text-align:left;
+  width:100%;padding:11px 46px 11px 10px;margin:0;background:none;border:0;border-radius:2px;color:inherit;font:inherit;text-align:left;
   cursor:pointer;-webkit-tap-highlight-color:transparent}
 .row:hover{background:var(--tint)}
 .row:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
@@ -159,6 +159,34 @@ main{position:relative;z-index:1;flex:1}
 @media (min-width:720px){ .bar{position:sticky;bottom:0} }
 @media (hover:none),(max-width:719px){ .hints{display:none} }
 @media (prefers-reduced-motion:reduce){ *{transition:none!important;scroll-behavior:auto!important} }
+.notice{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:rgba(20,15,8,.64)}
+.notice-card{width:100%;max-width:440px;background:var(--paper-hi);color:var(--ink);border:2px solid var(--ink);border-radius:3px;padding:22px 22px 20px;box-shadow:0 14px 44px rgba(0,0,0,.45)}
+.notice-card h2{margin:0 0 10px;font:400 1.5rem/1.15 'IM Fell English SC','IM Fell English',Georgia,serif;letter-spacing:.12em}
+.notice-card p{margin:0 0 10px;font-size:1.02rem;line-height:1.45}
+.notice-ok{margin-top:6px;padding:8px 22px;background:var(--ink);color:var(--paper-hi);border:0;border-radius:2px;font:500 1rem/1.2 'Zilla Slab',Georgia,serif;cursor:pointer}
+.notice-ok:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.gb{position:absolute;right:8px;top:50%;transform:translateY(-50%);z-index:4;width:32px;height:32px;display:grid;place-items:center;
+  border-radius:2px;color:var(--ink-soft);text-decoration:none;font-size:1.1rem;line-height:1;opacity:.75}
+.gb:hover{opacity:1;color:var(--ink);background:var(--tint)}
+.gb:focus-visible{outline:2px solid var(--ink);outline-offset:-2px;opacity:1}
+.find{display:flex;flex-wrap:wrap;gap:8px;padding-top:14px}
+.search{flex:1 1 200px;min-width:0;padding:6px 10px;background:var(--paper-hi);color:var(--ink);border:1px solid var(--trail);
+  border-radius:2px;font:400 1rem/1.3 'Zilla Slab',Georgia,serif}
+.search::placeholder{color:var(--ink-soft)}
+.search:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.find + .tools{padding-top:8px}
+.tabs.dim{opacity:.45}
+.region{position:relative;padding:12px 12px 14px;margin:0 -12px}
+.region > *{position:relative}
+.region::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--p,0%);pointer-events:none;
+  background:var(--tint);background:color-mix(in srgb,var(--ink) 11%,transparent);transition:width .25s}
+.notice-card{max-height:100%;overflow:auto}
+.notice-card a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.notice-card ul{margin:0 0 10px;padding-left:1.1em}
+.notice-card li{margin-bottom:8px;font-size:1.02rem;line-height:1.45}
+.credits-link{background:none;border:0;padding:2px 0;color:var(--bar-ink);font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;opacity:.85}
+.credits-link:hover{opacity:1}
+.credits-link:focus-visible{outline:2px solid var(--bar-ink);outline-offset:3px;opacity:1}
 </style>
 </head>
 <body>
@@ -213,11 +241,21 @@ main{position:relative;z-index:1;flex:1}
 
 <main>
   <div class="wrap">
+    <div class="find">
+      <input id="search" class="search" type="search" placeholder="Search missions, people or chapters (press /)" aria-label="Search missions" autocomplete="off">
+      <button class="tool" id="nextBtn" type="button">Next unfinished</button>
+      <button class="tool" id="markBtn" type="button">Mark chapter done</button>
+    </div>
     <div class="tools">
       <button class="tool" id="hide" type="button" aria-pressed="false">Hide completed</button>
+      <button class="tool" id="hideHonor" type="button" aria-pressed="false">Hide honor missions</button>
+      <button class="tool" id="exportBtn" type="button">Export</button>
+      <button class="tool" id="importBtn" type="button">Import</button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
       <button class="tool" id="reset" type="button">Reset progress</button>
     </div>
     <div id="panels"></div>
+    <p class="empty" id="nores" hidden></p>
   </div>
 </main>
 
@@ -233,11 +271,36 @@ main{position:relative;z-index:1;flex:1}
       <div class="hints" aria-hidden="true">
         <span class="hint"><span class="key">←</span><span class="key">→</span>Chapter</span>
         <span class="hint"><span class="key">↑</span><span class="key">↓</span>Mission</span>
+        <span class="hint"><span class="key">/</span>Search</span>
         <span class="hint"><span class="key">Space</span>Check off</span>
       </div>
+      <button class="credits-link" id="creditsBtn" type="button">Credits</button>
     </div>
   </div>
 </footer>
+
+<div class="notice" id="credits" role="dialog" aria-modal="true" aria-labelledby="creditsT" hidden>
+  <div class="notice-card">
+    <h2 id="creditsT">Credits</h2>
+    <ul>
+      <li><strong>Mission list and guide links:</strong> <a href="https://www.gtabase.com/red-dead-redemption-2/missions/" target="_blank" rel="noopener noreferrer">GTABase</a>. Each &#8599; link on a mission opens its page there.</li>
+      <li><strong>Built by AI:</strong> designed, written and coded entirely by Claude, made by Anthropic, from a conversation with a person.</li>
+      <li><strong>The game:</strong> Red Dead Redemption 2 is made by Rockstar Games. This is an unofficial fan project, not affiliated with or endorsed by Rockstar Games or Take-Two Interactive. It uses no game assets; the map look is drawn from scratch.</li>
+      <li><strong>Fonts:</strong> IM Fell English by Igino Marini and Zilla Slab by Typotheque for Mozilla, both open source through Google Fonts.</li>
+    </ul>
+    <p>Mistakes are possible. If something looks off, check it against the in-game Progress menu.</p>
+    <button class="notice-ok" id="creditsClose" type="button">Close</button>
+  </div>
+</div>
+
+<div class="notice" id="notice" role="dialog" aria-modal="true" aria-labelledby="noticeT" aria-describedby="noticeB" hidden>
+  <div class="notice-card">
+    <h2 id="noticeT">Made entirely by AI</h2>
+    <p id="noticeB">This checklist was designed, written and coded entirely by AI (Claude, made by Anthropic), from a conversation with a person.</p>
+    <p>The mission list was compiled from GTABase and may contain mistakes. If something looks off, check it against the in-game Progress menu.</p>
+    <button class="notice-ok" id="noticeOk" type="button">Got it</button>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -371,8 +434,11 @@ main{position:relative;z-index:1;flex:1}
     ]}
   ];
 
+  /* GTABase page slug for each mission, in story order */
+  var SLUGS = ["outlaws-from-the-west","enter-pursued-by-a-memory","the-aftermath-of-genesis","old-friends","who-the-hell-is-leviticus-cornwall","eastward-bound","polite-society-valentine-style","americans-at-rest","who-is-not-without-sin","exit-pursued-by-a-bruised-ego","the-first-shall-be-last","paying-a-social-call","a-quiet-time","blessed-are-the-meek","good-honest-snake-oil","we-loved-once-and-true-iii","money-lending-and-other-sins-i-ii","money-lending-and-other-sins-iii","the-spines-of-america","pouring-forth-oil-ii","a-fisher-of-men","pouring-forth-oil-iv","an-american-pastoral-scene","the-sheep-and-the-goats","a-strange-kindness","the-new-south","further-questions-of-female-suffrage","money-lending-and-other-sins-iv","american-distillation","the-course-of-true-love-ii","the-course-of-true-love-iii","advertising-the-new-american-art-ii","horse-flesh-for-dinner","the-fine-joys-of-tobacco","magicians-for-sport","friends-in-very-low-places","an-honest-mistake","preaching-forgiveness-as-he-went","sodom-back-to-gomorrah","blessed-are-the-peacemakers","a-short-walk-in-a-pretty-town","blood-feuds-ancient-and-modern","the-battle-of-shady-belle","the-joys-of-civilization","angelo-bronte-a-man-of-honor","money-lending-and-other-sins-v","help-a-brother-out","brothers-and-sisters-one-and-all","fatherhood-and-other-dreams-ii","no-no-and-thrice-no","the-gilded-cage","american-fathers-ii","a-fine-night-of-debauchery","high-and-low-finance","horsemen-apocalypses","urban-pleasures","country-pursuits","revenge-is-a-dish-best-eaten","banking-the-old-american-art","welcome-to-the-new-world","savagery-unleashed","a-kind-and-benevolent-despot","hell-hath-no-fury","paradise-mercifully-departed","dear-uncle-tacitus","fleeting-joy","a-fork-in-the-road","that-s-murfree-country","icarus-and-friends","visiting-hours","just-a-social-call","do-not-seek-absolution-i","do-not-seek-absolution-ii","of-men-and-angels","the-course-of-true-love-v","money-lending-and-other-sins-vi-vii","the-delights-of-van-horn","the-bridge-to-nowhere","a-rage-unleashed","archeology-for-beginners","honor-amongst-thieves","the-fine-art-of-conversation","goodbye-dear-friend","mrs-sadie-adler-widow-ii","favored-sons","the-king-s-son","my-last-boy","our-best-selves","red-dead-redemption","the-wheel","simple-pleasures","farming-for-beginners","fatherhood-for-beginners","old-habits","jim-milton-rides-again","fatherhood-for-idiots","motherhood","gainful-employment","home-of-the-gentry","bare-knuckles-friendships","home-improvement-for-beginners","an-honest-day-s-labors","the-tool-box","a-new-jerusalem","a-quick-favor-for-an-old-friend","uncle-s-bad-day","trying-again","a-really-big-bastard","a-new-future-imagined","american-venom"];
+
   var KEY = 'rdr2-story-checklist-v1';
-  var state = {done:{}, chapter:null, hide:false};
+  var state = {done:{}, chapter:null, hide:false, noHonor:false, ack:false};
   var TOTAL = 0;
 
   function load(){
@@ -384,6 +450,8 @@ main{position:relative;z-index:1;flex:1}
         if(p.done && typeof p.done === 'object') state.done = p.done;
         if(typeof p.chapter === 'number') state.chapter = p.chapter;
         state.hide = !!p.hide;
+        state.noHonor = !!p.noHonor;
+        state.ack = !!p.ack;
       }
     }catch(e){}
   }
@@ -394,7 +462,7 @@ main{position:relative;z-index:1;flex:1}
     clearTimeout(remoteTimer);
     remoteTimer = setTimeout(function(){
       try{
-        remoteDoc.set({done:Object.keys(state.done), chapter:state.chapter == null ? 0 : state.chapter, hide:!!state.hide}).catch(function(){});
+        remoteDoc.set({done:Object.keys(state.done), chapter:state.chapter == null ? 0 : state.chapter, hide:!!state.hide, noHonor:!!state.noHonor, ack:!!state.ack}).catch(function(){});
       }catch(e){}
     }, 400);
   }
@@ -405,6 +473,27 @@ main{position:relative;z-index:1;flex:1}
     return n;
   }
 
+  var q = '';
+  var searchEl = document.getElementById('search');
+  var notice = document.getElementById('notice');
+  var noticeOk = document.getElementById('noticeOk');
+  function closeNotice(){ notice.hidden = true; }
+  function dismissNotice(){ state.ack = true; save(); closeNotice(); }
+  noticeOk.addEventListener('click', dismissNotice);
+  var credits = document.getElementById('credits');
+  var creditsBack = null;
+  function openCredits(){
+    creditsBack = document.activeElement;
+    credits.hidden = false;
+    document.getElementById('creditsClose').focus();
+  }
+  function closeCredits(){
+    credits.hidden = true;
+    if(creditsBack && creditsBack.focus) creditsBack.focus();
+  }
+  document.getElementById('creditsBtn').addEventListener('click', openCredits);
+  document.getElementById('creditsClose').addEventListener('click', closeCredits);
+  credits.addEventListener('click', function(e){ if(e.target === credits) closeCredits(); });
   var tabsEl = document.getElementById('tabs');
   var panelsEl = document.getElementById('panels');
   var hideBtn = document.getElementById('hide');
@@ -434,6 +523,7 @@ main{position:relative;z-index:1;flex:1}
     panel.hidden = true;
 
     var region = el('div','region');
+    ch.region = region;
     region.appendChild(el('h2', null, c.name));
     var sub = el('p');
     sub.appendChild(document.createTextNode(c.kind + ', '));
@@ -448,6 +538,8 @@ main{position:relative;z-index:1;flex:1}
       var it;
       if(c.task){ tcount++; it = {id:'t'+tcount}; }
       else { counter++; it = {id:'m'+counter, num:counter}; }
+      it.honor = r[2]==='h';
+      it.hay = (r[0] + ' ' + (r[1] || '') + ' ' + c.name).toLowerCase();
       var li = el('li', r[2]==='h' ? 'honor' : '');
       var btn = el('button','row');
       btn.type = 'button';
@@ -478,6 +570,16 @@ main{position:relative;z-index:1;flex:1}
 
       btn.addEventListener('click', function(){ toggle(it, ch); });
       li.appendChild(btn);
+      var slug = SLUGS[it.num - 1];
+      if(slug && !c.task){
+        var gb = el('a','gb','\u2197');
+        gb.href = 'https://www.gtabase.com/red-dead-redemption-2/missions/' + slug;
+        gb.target = '_blank';
+        gb.rel = 'noopener noreferrer';
+        gb.title = 'Open on GTABase';
+        gb.setAttribute('aria-label', 'Open ' + r[0] + ' on GTABase');
+        li.appendChild(gb);
+      }
       list.appendChild(li);
       it.li = li; it.btn = btn;
       ch.items.push(it);
@@ -516,7 +618,7 @@ main{position:relative;z-index:1;flex:1}
     }
     save();
     updateAll();
-    if(nowDone && ch.items.every(function(x){ return state.done[x.id]; })){
+    if(nowDone && ch.items.every(function(x){ return (state.noHonor && x.honor) || state.done[x.id]; })){
       var ci = CH.indexOf(ch);
       if(ci < CH.length-1 && state.chapter === ci){
         setTimeout(function(){ if(state.chapter === ci) select(ci+1,{top:true}); }, 450);
@@ -525,14 +627,16 @@ main{position:relative;z-index:1;flex:1}
   }
 
   function updateAll(){
-    var total = 0;
-    CH.forEach(function(c){
-      var d = 0, nextSet = false, vis = [];
+    var total = 0, all = 0, anyHit = false;
+    CH.forEach(function(c, ci){
+      var d = 0, n = 0, nextSet = false, vis = [], prevDone = false;
       c.items.forEach(function(it){
+        var off = state.noHonor && it.honor;
         var isDone = !!state.done[it.id];
-        if(isDone) d++;
-        var hide = state.hide && isDone;
-        var isNext = !isDone && !nextSet;
+        if(!off){ n++; if(isDone) d++; }
+        var hit = !q || it.hay.indexOf(q) !== -1;
+        var hide = off || !hit || (state.hide && isDone);
+        var isNext = !off && !isDone && !nextSet;
         if(isNext) nextSet = true;
         it.li.classList.toggle('done', isDone);
         it.li.classList.toggle('next', isNext);
@@ -540,25 +644,36 @@ main{position:relative;z-index:1;flex:1}
         it.li.hidden = hide;
         it.btn.setAttribute('aria-checked', isDone ? 'true' : 'false');
         it.nxt.hidden = !isNext;
-        if(!hide) vis.push(it.li);
+        it.li.classList.toggle('prevdone', !hide && prevDone);
+        if(!hide){ vis.push(it.li); prevDone = isDone; }
       });
       if(vis.length){
         vis[0].classList.add('first');
         vis[vis.length-1].classList.add('last');
       }
-      c.list.classList.toggle('hiding', state.hide);
-      c.empty.hidden = vis.length > 0;
-      c.countEl.textContent = d + ' of ' + c.items.length;
-      c.tabCnt.textContent = d + ' / ' + c.items.length;
-      c.tab.classList.toggle('full', d === c.items.length);
-      total += d;
+      c.list.classList.toggle('hiding', state.hide || state.noHonor);
+      if(q){ c.empty.hidden = true; c.panel.hidden = !vis.length; if(vis.length) anyHit = true; }
+      else { c.empty.hidden = vis.length > 0; c.panel.hidden = ci !== state.chapter; }
+      c.countEl.textContent = d + ' of ' + n;
+      c.tabCnt.textContent = d + ' / ' + n;
+      c.tab.classList.toggle('full', d === n);
+      c.region.style.setProperty('--p', (n ? d / n * 100 : 0) + '%');
+      total += d; all += n;
     });
-    var pct = Math.round(total / TOTAL * 100);
+    var nr = document.getElementById('nores');
+    nr.hidden = !q || anyHit;
+    if(q && !anyHit) nr.textContent = 'No missions match \u201c' + searchEl.value.trim() + '\u201d.';
+    tabsEl.classList.toggle('dim', !!q);
+    var pct = all ? Math.round(total / all * 100) : 0;
     document.getElementById('tDone').textContent = total;
+    document.getElementById('tOf').textContent = 'of ' + all + ' complete';
     document.getElementById('tPct').textContent = pct + '%';
-    document.getElementById('meterFill').style.width = (total / TOTAL * 100) + '%';
-    document.getElementById('meter').setAttribute('aria-valuenow', total);
+    document.getElementById('meterFill').style.width = (all ? total / all * 100 : 0) + '%';
+    var m = document.getElementById('meter');
+    m.setAttribute('aria-valuenow', total);
+    m.setAttribute('aria-valuemax', all);
     hideBtn.setAttribute('aria-pressed', state.hide ? 'true' : 'false');
+    document.getElementById('hideHonor').setAttribute('aria-pressed', state.noHonor ? 'true' : 'false');
   }
 
   function select(ci, opts){
@@ -571,6 +686,7 @@ main{position:relative;z-index:1;flex:1}
       c.panel.hidden = !on;
     });
     state.chapter = ci;
+    if(q){ q = ''; searchEl.value = ''; updateAll(); }
     save();
     try{ CH[ci].tab.scrollIntoView({inline:'nearest', block:'nearest'}); }catch(e){}
     if(opts.focusTab) CH[ci].tab.focus();
@@ -610,6 +726,117 @@ main{position:relative;z-index:1;flex:1}
     updateAll();
   });
 
+  searchEl.addEventListener('input', function(){ q = searchEl.value.trim().toLowerCase(); updateAll(); });
+  searchEl.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ e.preventDefault(); if(searchEl.value){ searchEl.value = ''; q = ''; updateAll(); } else { searchEl.blur(); } }
+  });
+
+  var nextBtn = document.getElementById('nextBtn');
+  nextBtn.addEventListener('click', function(){
+    for(var ci = 0; ci < CH.length; ci++){
+      var items = CH[ci].items;
+      for(var j = 0; j < items.length; j++){
+        var it = items[j];
+        if((state.noHonor && it.honor) || state.done[it.id]) continue;
+        select(ci);
+        it.btn.scrollIntoView({block:'center'});
+        it.btn.focus({preventScroll:true});
+        return;
+      }
+    }
+    flash(nextBtn, 'All done');
+  });
+
+  var markBtn = document.getElementById('markBtn'), markTimer = null;
+  function disarmMark(){
+    clearTimeout(markTimer);
+    markBtn.removeAttribute('data-arm');
+    markBtn.textContent = 'Mark chapter done';
+  }
+  markBtn.addEventListener('click', function(){
+    if(!markBtn.getAttribute('data-arm')){
+      markBtn.setAttribute('data-arm','1');
+      markBtn.textContent = 'Press again to confirm';
+      markTimer = setTimeout(disarmMark, 4000);
+      return;
+    }
+    disarmMark();
+    var ci = state.chapter == null ? 0 : state.chapter;
+    CH[ci].items.forEach(function(it){
+      if(!(state.noHonor && it.honor)) state.done[it.id] = 1;
+    });
+    save();
+    updateAll();
+    if(ci < CH.length - 1){
+      setTimeout(function(){ if(state.chapter === ci) select(ci + 1, {top:true}); }, 450);
+    }
+  });
+  markBtn.addEventListener('blur', disarmMark);
+
+  document.getElementById('hideHonor').addEventListener('click', function(){
+    state.noHonor = !state.noHonor;
+    save();
+    updateAll();
+  });
+
+  function flash(btn, text){
+    var orig = btn.getAttribute('data-label') || btn.textContent;
+    btn.setAttribute('data-label', orig);
+    btn.textContent = text;
+    clearTimeout(btn._t);
+    btn._t = setTimeout(function(){ btn.textContent = orig; }, 1800);
+  }
+
+  var exportBtn = document.getElementById('exportBtn');
+  exportBtn.addEventListener('click', async function(){
+    var text = JSON.stringify({
+      app:'rdr2-checklist', version:1, exported:new Date().toISOString(),
+      done:Object.keys(state.done), hide:!!state.hide, noHonor:!!state.noHonor
+    }, null, 2);
+    var name = 'rdr2-checklist-progress.json';
+    try{
+      if(window.claude && window.claude.use){
+        var dl = await window.claude.use('downloads');
+        if(dl){ await dl.save({filename:name, data:text}); flash(exportBtn, 'Exported'); return; }
+      }
+    }catch(e){
+      if(e && e.code === 'declined') return;
+    }
+    try{
+      var url = URL.createObjectURL(new Blob([text], {type:'application/json'}));
+      var a = document.createElement('a');
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      flash(exportBtn, 'Exported');
+    }catch(e){ flash(exportBtn, 'Export failed'); }
+  });
+
+  var importBtn = document.getElementById('importBtn');
+  var importFile = document.getElementById('importFile');
+  importBtn.addEventListener('click', function(){ importFile.click(); });
+  importFile.addEventListener('change', function(){
+    var f = importFile.files && importFile.files[0];
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try{
+        var d = JSON.parse(String(r.result));
+        if(!d || !Array.isArray(d.done)) throw new Error('bad');
+        var added = 0;
+        d.done.forEach(function(k){
+          if(valid[k] && !state.done[k]){ state.done[k] = 1; added++; }
+        });
+        save();
+        updateAll();
+        flash(importBtn, added + ' added');
+      }catch(e){ flash(importBtn, 'Invalid file'); }
+      importFile.value = '';
+    };
+    r.onerror = function(){ flash(importBtn, 'Could not read'); importFile.value = ''; };
+    r.readAsText(f);
+  });
+
   var resetTimer = null;
   function disarm(){
     clearTimeout(resetTimer);
@@ -631,7 +858,25 @@ main{position:relative;z-index:1;flex:1}
   resetBtn.addEventListener('blur', disarm);
 
   document.addEventListener('keydown', function(e){
+    if(!credits.hidden){
+      if(e.key === 'Escape'){ e.preventDefault(); closeCredits(); }
+      else if(e.key === 'Tab'){
+        var f = credits.querySelectorAll('a[href],button');
+        var first = f[0], last = f[f.length - 1];
+        if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+        else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+      }
+      return;
+    }
+    if(!notice.hidden){
+      if(e.key === 'Escape'){ e.preventDefault(); dismissNotice(); }
+      else if(e.key === 'Tab'){ e.preventDefault(); noticeOk.focus(); }
+      return;
+    }
     if(e.altKey || e.ctrlKey || e.metaKey) return;
+    var tg = e.target && e.target.tagName;
+    if(tg === 'INPUT' || tg === 'TEXTAREA') return;
+    if(e.key === '/'){ e.preventDefault(); searchEl.focus(); searchEl.select(); return; }
     var k = e.key;
     var a = document.activeElement;
     if(k === 'ArrowLeft' || k === 'ArrowRight'){
@@ -665,6 +910,7 @@ main{position:relative;z-index:1;flex:1}
   }
   updateAll();
   select(start);
+  if(!state.ack){ notice.hidden = false; noticeOk.focus(); }
 
   /* Account-backed progress: survives cleared browser data and syncs across devices */
   (async function(){
@@ -683,6 +929,8 @@ main{position:relative;z-index:1;flex:1}
         (Array.isArray(d.done) ? d.done : []).forEach(function(k){ if(valid[k]) done[k] = 1; });
         state.done = done;
         state.hide = !!d.hide;
+        state.noHonor = !!d.noHonor;
+        if(d.ack){ state.ack = true; closeNotice(); }
         if(typeof d.chapter === 'number') state.chapter = d.chapter;
         remoteDoc = ref;
         try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
