@@ -14,7 +14,7 @@
 :root{
   --paper:#d3c6a0; --paper-hi:#e3d9b9; --edge:#6f5c3a;
   --ink:#2a2117; --ink-soft:#574833; --trail:rgba(42,33,23,.5); --tint:rgba(42,33,23,.07);
-  --gold:#e2b43a; --gold-ink:#7a5808; --water:#6c8789; --dot:#b3281e; --dot-halo:rgba(179,40,30,.32);
+  --gold:#e2b43a; --gold-ink:#7a5808; --water:#6c8789; --dot:#b3281e; --dot-halo:rgba(179,40,30,.32); --dot-text:#b3281e;
   --bar:#221c14; --bar-ink:#e6dbbb;
   --noise-op:.38; --edge-op:.55;
   box-sizing:border-box;
@@ -25,7 +25,7 @@
   :root:not([data-theme="light"]){
     --paper:#2b281f; --paper-hi:#38342a; --edge:#0d0b07;
     --ink:#e8dec2; --ink-soft:#b3a789; --trail:rgba(232,222,194,.42); --tint:rgba(232,222,194,.07);
-    --gold:#e6b93e; --gold-ink:#e6b93e; --water:#5b7b82; --dot:#d9534a; --dot-halo:rgba(217,83,74,.38);
+    --gold:#e6b93e; --gold-ink:#e6b93e; --water:#5b7b82; --dot:#f0646c; --dot-halo:rgba(240,100,108,.45); --dot-text:#f0646c;
     --bar:#0f0d09; --bar-ink:#cfc4a6;
     --noise-op:.22; --edge-op:.8;
   }
@@ -33,7 +33,7 @@
 :root[data-theme="dark"]{
   --paper:#2b281f; --paper-hi:#38342a; --edge:#0d0b07;
   --ink:#e8dec2; --ink-soft:#b3a789; --trail:rgba(232,222,194,.42); --tint:rgba(232,222,194,.07);
-  --gold:#e6b93e; --gold-ink:#e6b93e; --water:#5b7b82; --dot:#d9534a; --dot-halo:rgba(217,83,74,.38);
+  --gold:#e6b93e; --gold-ink:#e6b93e; --water:#5b7b82; --dot:#f0646c; --dot-halo:rgba(240,100,108,.45); --dot-text:#f0646c;
   --bar:#0f0d09; --bar-ink:#cfc4a6;
   --noise-op:.22; --edge-op:.8;
 }
@@ -101,7 +101,7 @@ h1{margin:2px 0 0;font:400 clamp(1.45rem,5vw,2rem)/1.1 'IM Fell English SC','IM 
 .tab:hover{background:var(--tint);color:var(--ink)}
 .tab[aria-selected="true"]{color:var(--ink);font-weight:600}
 .tab[aria-selected="true"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:3px;background:var(--ink)}
-.tab.full .cnt{color:var(--gold-ink);font-weight:600}
+.tab.full .cnt{color:var(--dot-text);font-weight:600}
 .tab:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
 
 /* ---------- main ---------- */
@@ -212,11 +212,11 @@ main{position:relative;z-index:1;flex:1}
 @keyframes stampH{0%{transform:rotate(30deg) scale(1.35);opacity:.35}60%{transform:rotate(45deg) scale(.78)}100%{transform:rotate(45deg) scale(.86);opacity:1}}
 @keyframes inkcheck{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
 @keyframes ring{from{transform:scale(1);opacity:.55}to{transform:scale(2.2);opacity:0}}
-.region .cstamp{display:none;position:absolute;right:14px;bottom:12px;padding:2px 10px 1px;border:3px double var(--ink);border-radius:3px;
-  color:var(--ink);opacity:.6;font:400 1.05rem/1.2 'IM Fell English SC','IM Fell English',Georgia,serif;letter-spacing:.2em;transform:rotate(-9deg);pointer-events:none}
+.region .cstamp{display:none;position:absolute;right:14px;bottom:12px;padding:2px 10px 1px;border:3px double var(--dot-text);border-radius:3px;
+  color:var(--dot-text);opacity:.8;font:400 1.05rem/1.2 'IM Fell English SC','IM Fell English',Georgia,serif;letter-spacing:.2em;transform:rotate(-9deg);pointer-events:none}
 .region.full .cstamp{display:block}
 .region.pop .cstamp{animation:cstamp .5s cubic-bezier(.2,.9,.3,1.2)}
-@keyframes cstamp{from{transform:rotate(-3deg) scale(1.9);opacity:0}to{transform:rotate(-9deg) scale(1);opacity:.6}}
+@keyframes cstamp{from{transform:rotate(-3deg) scale(1.9);opacity:0}to{transform:rotate(-9deg) scale(1);opacity:.8}}
 @media (prefers-reduced-motion:reduce){ .stamp .shape,.stamp .blip svg,.stamp .blip::after,.region.pop .cstamp{animation:none!important} }
 .sheet .cd{fill:none;stroke:var(--ink);stroke-opacity:.14;stroke-width:1.6}
 .sheet .cl{fill:none;stroke:var(--paper-hi);stroke-opacity:.6;stroke-width:2}
