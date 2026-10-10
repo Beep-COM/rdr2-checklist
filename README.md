@@ -5,12 +5,12 @@
 
 An unofficial checklist for all 110 main story missions of *Red Dead Redemption 2*, styled to look like the in-game map. It is a single HTML file with no install and no build step.
 
-**Live page:** `https://beep-com.github.io/rdr2-checklist/` 
+**Live page:** `https://beep-com.github.io/rdr2-checklist/`
 
 ## Features
 
 - All 110 main story missions across 8 chapters, in story order, with the mission giver shown under each title
-- A dotted trail through the missions that turns solid as you complete them, with a gold marker for the next mission
+- A dotted trail through the missions that turns solid as you complete them, with a red marker for the next mission
 - Chapter tabs with scroll arrows, and automatic jump to the next chapter when you finish one
 - Chapter progress shading behind each chapter title, plus an overall progress bar
 - Optional honor missions (the missable ones) marked with a diamond, with a toggle to hide them
