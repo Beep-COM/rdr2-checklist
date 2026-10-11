@@ -304,6 +304,15 @@ main{position:relative;z-index:1;flex:1}
   .tab .tnum{display:flex}
 }
 h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
+.sh{margin:18px 0 4px;font:400 1.1rem/1.2 'IM Fell English SC','IM Fell English',Georgia,serif;letter-spacing:.1em}
+.srow{display:grid;grid-template-columns:1fr auto;gap:3px 12px;margin:9px 0;align-items:baseline}
+.sl{font-weight:500}
+.sv{font-variant-numeric:tabular-nums;color:var(--ink-soft);font-size:.98rem}
+.sbar{grid-column:1/-1;height:7px;background:var(--tint);border:1px solid var(--trail);border-radius:2px;overflow:hidden}
+.sbar i{display:block;height:100%;background:var(--ink)}
+.sbar i.hot{background:var(--dot)}
+.snote{margin:6px 0 0;font:italic .98rem/1.35 'IM Fell English',Georgia,serif;color:var(--ink-soft)}
+#stats .notice-card{max-width:540px}
 </style>
 </head>
 <body>
@@ -407,7 +416,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         <span class="hint"><span class="key">/</span><span class="plabel">Search</span></span>
         <span class="hint"><span class="keys"><span class="key">Ctrl</span><span class="key">Z</span></span><span class="plabel">Undo</span></span>
       </div>
-      <span class="links"><button class="credits-link" id="dataBtn" type="button" aria-haspopup="dialog">Data</button><button class="credits-link" id="creditsBtn" type="button">Credits</button></span>
+      <span class="links"><button class="credits-link" id="statsBtn" type="button" aria-haspopup="dialog">Stats</button><button class="credits-link" id="dataBtn" type="button" aria-haspopup="dialog">Data</button><button class="credits-link" id="creditsBtn" type="button">Credits</button><button class="credits-link" id="soundBtn" type="button" aria-pressed="true">Sound: on</button></span>
     </div>
   </div>
 </footer>
@@ -420,6 +429,14 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     <label class="opt"><input type="checkbox" id="hideSpecial"><span><strong>Hide Special Edition mission</strong><em>Removes &ldquo;High and Low Finance&rdquo;, which needs the Special Edition.</em></span></label>
     <label class="opt"><input type="checkbox" id="hideStrangers"><span><strong>Hide Strangers</strong><em>Removes the Strangers section and its tab.</em></span></label>
     <button class="notice-ok" id="filtersClose" type="button">Done</button>
+  </div>
+</div>
+
+<div class="notice" id="stats" role="dialog" aria-modal="true" aria-labelledby="statsT" hidden>
+  <div class="notice-card">
+    <h2 id="statsT">Stats</h2>
+    <div id="statsBody"></div>
+    <button class="notice-ok" id="statsClose" type="button">Close</button>
   </div>
 </div>
 
@@ -439,7 +456,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     <h2 id="creditsT">Credits</h2>
     <ul>
       <li><strong>Mission list and guide links:</strong> <a href="https://www.gtabase.com/red-dead-redemption-2/missions/" target="_blank" rel="noopener noreferrer">GTABase</a>. Each &#8599; link on a mission opens its page there.</li>
-      <li><strong>Stranger parts:</strong> the steps within longer Stranger stories and the missable warnings follow the <a href="https://www.trueachievements.com/game/Red-Dead-Redemption-2/walkthrough/4" target="_blank" rel="noopener noreferrer">TrueAchievements walkthrough</a> and may differ slightly from the in-game journal.</li>
+      <li><strong>Stranger parts:</strong> the steps within longer Stranger stories follow the <a href="https://www.gtabase.com/red-dead-redemption-2/strangers/" target="_blank" rel="noopener noreferrer">GTABase Stranger pages</a>, and the missable warnings follow the <a href="https://www.trueachievements.com/game/Red-Dead-Redemption-2/walkthrough/4" target="_blank" rel="noopener noreferrer">TrueAchievements walkthrough</a>. They may differ slightly from the in-game journal.</li>
       <li><strong>Built by AI:</strong> designed, written and coded entirely by Claude, made by Anthropic, from a conversation with a person.</li>
       <li><strong>The game:</strong> Red Dead Redemption 2 is made by Rockstar Games. This is an unofficial fan project, not affiliated with or endorsed by Rockstar Games or Take-Two Interactive. It uses no game assets; the map look is drawn from scratch.</li>
       <li><strong>Fonts:</strong> IM Fell English by Igino Marini and Zilla Slab by Typotheque for Mozilla, both open source through Google Fonts.</li>
@@ -589,53 +606,86 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       ['American Venom','Sadie Adler']
     ]},
     {name:'Strangers', kind:'Side missions', task:true, items:[
-      ["The Noblest of Men, and a Woman", "Jim \"Boy\" Calloway and Theodore Levin, gunslingers", "", "the-noblest-of-men-and-a-woman-gunslingers", "Chapter 2"],
+      ["The Noblest of Men, and a Woman, I", "Jim \"Boy\" Calloway and Theodore Levin, gunslingers", "", "the-noblest-of-men-and-a-woman-gunslingers", "Chapter 2", 1],
+      ["The Noblest of Men, and a Woman, II", "Jim \"Boy\" Calloway and Theodore Levin", "", "the-noblest-of-men-and-a-woman-gunslingers", "Chapter 2", 2],
+      ["The Noblest of Men, and a Woman, III", "Jim \"Boy\" Calloway and Theodore Levin", "", "the-noblest-of-men-and-a-woman-gunslingers", "Chapter 2", 3],
+      ["The Noblest of Men, and a Woman, IV", "Jim \"Boy\" Calloway and Theodore Levin", "", "the-noblest-of-men-and-a-woman-gunslingers", "Chapter 2", 4],
       ["All That Glitters", "Máximo Cristóbal Valdespino, treasure hunting", "", "all-that-giltters-treasure-hunt", "Chapter 2"],
       ["Arcadia for Amateurs, I", "Albert Mason", "", "arcadia-for-amateurs", "Chapter 2", 1],
       ["Arcadia for Amateurs, II", "Albert Mason", "", "arcadia-for-amateurs", "Chapter 2", 2],
       ["Arcadia for Amateurs, III", "Albert Mason", "", "arcadia-for-amateurs", "Chapter 2", 3],
       ["Arcadia for Amateurs, IV", "Albert Mason", "", "arcadia-for-amateurs", "Chapter 2", 4],
       ["Arcadia for Amateurs, V", "Albert Mason", "", "arcadia-for-amateurs", "Chapter 2", 5],
-      ["A Fine Night for It", "", "", "a-fine-night-for-it", "Chapter 2"],
-      ["American Dreams", "", "", "american-dreams", "Chapter 2"],
+      ["A Fine Night for It", "After a night chance encounter such as Torch Procession or Voice, nights only", "", "a-fine-night-for-it", "Chapter 2"],
+      ["American Dreams", "After the three Murder Scene chance encounters, nights only", "", "american-dreams", "Chapter 2"],
       ["Fundraiser", "", "m", "fundraiser", "Chapter 2"],
-      ["The Smell of the Grease Paint", "Miss Marjorie", "", "the-smell-of-the-grease-paint", "Chapter 2"],
-      ["Geology for Beginners", "Francis Sinclair, rock carvings collectible", "", "geology-for-beginners-rock-carvings", "Chapter 2"],
-      ["A Test of Faith", "Deborah MacGuiness, dinosaur bones collectible", "", "a-test-of-faith-dinosaur-bones", "Chapter 2"],
-      ["Smoking and Other Hobbies", "Phineas T. Ramsbottom, cigarette cards collectible", "", "smoking-and-other-hobbies-cigarette-cards", "Chapter 2"],
-      ["A Better World, A New Friend", "Mrs. L. Hobbs, hunting requests, the fifth request opens in the Epilogue", "", "a-better-world-a-new-friend-hunting-requests", "Chapter 2"],
-      ["A Fisher of Fish", "Jeremy Gill, legendary fish", "", "a-fisher-of-fish-legendary-fish", "Chapter 3"],
-      ["He’s British, of Course", "Margaret", "", "he-s-british-of-course", "Chapter 3"],
-      ["The Iniquities of History", "Jeremiah Compson", "", "the-iniquities-of-history", "Chapter 3"],
-      ["No Good Deed", "Dr. Alphonse Renaud", "", "no-good-deed", "Chapter 3"],
-      ["A Bright Bouncing Boy, I", "Marko Dragic", "", "a-bright-bouncing-boy", "Chapter 4", 1],
+      ["The Smell of the Grease Paint, I", "Miss Marjorie", "", "the-smell-of-the-grease-paint", "Chapter 2", 1],
+      ["The Smell of the Grease Paint, II", "Miss Marjorie", "", "the-smell-of-the-grease-paint", "Chapter 2", 2],
+      ["The Smell of the Grease Paint, III", "Miss Marjorie", "", "the-smell-of-the-grease-paint", "Chapter 2", 3],
+      ["Geology for Beginners, I", "Francis Sinclair, rock carvings collectible", "", "geology-for-beginners-rock-carvings", "Chapter 2", 1],
+      ["Geology for Beginners, II", "Francis Sinclair", "", "geology-for-beginners-rock-carvings", "Chapter 2", 2],
+      ["A Test of Faith, I", "Deborah MacGuiness, dinosaur bones collectible", "", "a-test-of-faith-dinosaur-bones", "Chapter 2", 1],
+      ["A Test of Faith, II", "Deborah MacGuiness", "", "a-test-of-faith-dinosaur-bones", "Chapter 2", 2],
+      ["Smoking and Other Hobbies", "Phineas T. Ramsbottom, cigarette cards collectible, after Who Is Not Without Sin", "", "smoking-and-other-hobbies-cigarette-cards", "Chapter 2"],
+      ["A Better World, A New Friend, I", "Mrs. L. Hobbs, hunting requests, the fifth request opens in the Epilogue", "", "a-better-world-a-new-friend-hunting-requests", "Chapter 2", 1],
+      ["A Better World, A New Friend, II", "Mrs. L. Hobbs, only after the story ends", "", "a-better-world-a-new-friend-hunting-requests", "Chapter 2", 2],
+      ["A Fisher of Fish, I", "Jeremy Gill, legendary fish", "", "a-fisher-of-fish-legendary-fish", "Chapter 3", 1],
+      ["A Fisher of Fish, II", "Jeremy Gill", "", "a-fisher-of-fish-legendary-fish", "Chapter 3", 2],
+      ["He’s British, of Course, I", "Margaret", "", "he-s-british-of-course", "Chapter 3", 1],
+      ["He’s British, of Course, II", "Margaret", "", "he-s-british-of-course", "Chapter 3", 2],
+      ["He’s British, of Course, III", "Margaret", "", "he-s-british-of-course", "Chapter 3", 3],
+      ["He’s British, of Course, IV", "Margaret", "", "he-s-british-of-course", "Chapter 3", 4],
+      ["He’s British, of Course, V", "Margaret", "", "he-s-british-of-course", "Chapter 3", 5],
+      ["The Iniquities of History, I", "Jeremiah Compson, after An Honest Mistake", "", "the-iniquities-of-history", "Chapter 3", 1],
+      ["The Iniquities of History, II", "Jeremiah Compson", "", "the-iniquities-of-history", "Chapter 3", 2],
+      ["No Good Deed", "Dr. Alphonse Renaud, after American Distillation, daytime only", "", "no-good-deed", "Chapter 3"],
+      ["A Bright Bouncing Boy, I", "Marko Dragic, after The Joys of Civilization", "", "a-bright-bouncing-boy", "Chapter 4", 1],
       ["A Bright Bouncing Boy, II", "Marko Dragic", "", "a-bright-bouncing-boy", "Chapter 4", 2],
       ["A Bright Bouncing Boy, III", "Marko Dragic", "", "a-bright-bouncing-boy", "Chapter 4", 3],
-      ["The Artist’s Way", "Charles Châtenay", "", "the-artist-s-way", "Chapter 4"],
+      ["The Artist’s Way, I", "Charles Châtenay, after The Joys of Civilization", "", "the-artist-s-way", "Chapter 4", 1],
+      ["The Artist’s Way, II", "Charles Châtenay", "", "the-artist-s-way", "Chapter 4", 2],
+      ["The Artist’s Way, III", "Charles Châtenay", "", "the-artist-s-way", "Chapter 4", 3],
+      ["The Artist’s Way, IV", "Charles Châtenay", "", "the-artist-s-way", "Chapter 4", 4],
       ["Oh, Brother, I", "Proetus and Acrisius", "", "oh-brother", "Chapter 4", 1],
       ["Oh, Brother, II", "Proetus and Acrisius", "", "oh-brother", "Chapter 4", 2],
       ["Oh, Brother, III", "Proetus and Acrisius", "", "oh-brother", "Chapter 4", 3],
-      ["Duchesses and Other Animals", "Algernon Wasp, exotics collectible", "", "duchesses-and-other-animals-exotics", "Chapter 4"],
-      ["Idealism and Pragmatism for Beginners, I", "Henri Lemieux", "", "idealism-and-pragmatism-for-beginners", "Chapter 4", 1],
+      ["Duchesses and Other Animals, I", "Algernon Wasp, exotics collectible, after The Gilded Cage", "", "duchesses-and-other-animals-exotics", "Chapter 4", 1],
+      ["Duchesses and Other Animals, II", "Algernon Wasp", "", "duchesses-and-other-animals-exotics", "Chapter 4", 2],
+      ["Duchesses and Other Animals, III", "Algernon Wasp", "", "duchesses-and-other-animals-exotics", "Chapter 4", 3],
+      ["Duchesses and Other Animals, IV", "Algernon Wasp", "", "duchesses-and-other-animals-exotics", "Chapter 4", 4],
+      ["Duchesses and Other Animals, V", "Algernon Wasp", "", "duchesses-and-other-animals-exotics", "Chapter 4", 5],
+      ["Idealism and Pragmatism for Beginners, I", "Henri Lemieux, after The Gilded Cage", "", "idealism-and-pragmatism-for-beginners", "Chapter 4", 1],
       ["Idealism and Pragmatism for Beginners, II", "Henri Lemieux", "", "idealism-and-pragmatism-for-beginners", "Chapter 4", 2],
       ["Idealism and Pragmatism for Beginners, III", "Henri Lemieux", "", "idealism-and-pragmatism-for-beginners", "Chapter 4", 3],
-      ["The Mercies of Knowledge", "Andrew Bell III", "", "the-mercies-of-knowledge", "Chapter 4"],
+      ["The Mercies of Knowledge, I", "Andrew Bell III, after The Joys of Civilization", "", "the-mercies-of-knowledge", "Chapter 4", 1],
+      ["The Mercies of Knowledge, II", "Andrew Bell III", "", "the-mercies-of-knowledge", "Chapter 4", 2],
+      ["The Mercies of Knowledge, III", "Andrew Bell III", "", "the-mercies-of-knowledge", "Chapter 4", 3],
+      ["The Mercies of Knowledge, IV", "Andrew Bell III", "", "the-mercies-of-knowledge", "Chapter 4", 4],
+      ["The Mercies of Knowledge, V", "Andrew Bell III", "", "the-mercies-of-knowledge", "Chapter 4", 5],
+      ["The Mercies of Knowledge, VI", "Andrew Bell III", "", "the-mercies-of-knowledge", "Chapter 4", 6],
+      ["The Mercies of Knowledge, VII", "Andrew Bell III", "", "the-mercies-of-knowledge", "Chapter 4", 7],
       ["The Ties That Bind Us, I", "Wendell White and Sampson Black, after The Joys of Civilization", "", "the-ties-that-bind-us", "Chapter 4", 1],
       ["The Ties That Bind Us, II", "Wendell White and Sampson Black", "", "the-ties-that-bind-us", "Chapter 4", 2],
       ["The Ties That Bind Us, III", "Wendell White and Sampson Black", "", "the-ties-that-bind-us", "Chapter 4", 3],
-      ["The Wisdom of the Elders, I", "Obediah Hinton", "", "the-wisdom-of-the-elders", "Chapter 5", 1],
+      ["The Ties That Bind Us, IV", "Wendell White and Sampson Black", "", "the-ties-that-bind-us", "Chapter 4", 4],
+      ["The Ties That Bind Us, V", "Wendell White and Sampson Black", "", "the-ties-that-bind-us", "Chapter 4", 5],
+      ["The Wisdom of the Elders, I", "Obediah Hinton, after Fleeting Joy", "", "the-wisdom-of-the-elders", "Chapter 5", 1],
       ["The Wisdom of the Elders, II", "Obediah Hinton", "", "the-wisdom-of-the-elders", "Chapter 5", 2],
-      ["The Widow of Willard’s Rest, I", "Charlotte Balfour", "m", "the-widow-of-willard-s-rest", "Chapter 5", 1],
+      ["The Wisdom of the Elders, III", "Obediah Hinton", "", "the-wisdom-of-the-elders", "Chapter 5", 3],
+      ["The Wisdom of the Elders, IV", "Obediah Hinton", "", "the-wisdom-of-the-elders", "Chapter 5", 4],
+      ["The Wisdom of the Elders, V", "Obediah Hinton", "", "the-wisdom-of-the-elders", "Chapter 5", 5],
+      ["The Widow of Willard’s Rest, I", "Charlotte Balfour, after A Fork in the Road", "m", "the-widow-of-willard-s-rest", "Chapter 5", 1],
       ["The Widow of Willard’s Rest, II", "Charlotte Balfour", "m", "the-widow-of-willard-s-rest", "Chapter 5", 2],
       ["The Widow of Willard’s Rest, III", "Charlotte Balfour", "m", "the-widow-of-willard-s-rest", "Chapter 5", 3],
       ["The Veteran, I", "Hamish Sinclair", "", "the-veteran", "Chapter 6", 1],
       ["The Veteran, II", "Hamish Sinclair", "", "the-veteran", "Chapter 6", 2],
       ["The Veteran, III", "Hamish Sinclair", "", "the-veteran", "Chapter 6", 3],
       ["The Veteran, IV", "Hamish Sinclair", "", "the-veteran", "Chapter 6", 4],
-      ["The American Inferno, Burnt Out, I", "Evelyn Miller, played as John", "", "the-american-inferno-burnt-out", "Epilogue", 1],
+      ["The American Inferno, Burnt Out, I", "Evelyn Miller, played as John, after The Landowning Classes", "", "the-american-inferno-burnt-out", "Epilogue", 1],
       ["The American Inferno, Burnt Out, II", "Evelyn Miller", "", "the-american-inferno-burnt-out", "Epilogue", 2],
       ["The American Inferno, Burnt Out, III", "Evelyn Miller", "", "the-american-inferno-burnt-out", "Epilogue", 3],
-      ["The American Inferno, Burnt Out, IV", "Evelyn Miller", "", "the-american-inferno-burnt-out", "Epilogue", 4]
+      ["The American Inferno, Burnt Out, IV", "Evelyn Miller", "", "the-american-inferno-burnt-out", "Epilogue", 4],
+      ["The American Inferno, Burnt Out, V", "Evelyn Miller", "", "the-american-inferno-burnt-out", "Epilogue", 5]
     ]}
   ];
 
@@ -646,7 +696,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   var SCENES = ["<path d=\"M0 110 L55 48 L80 70 L125 12 L178 92 L205 64 L245 100 L300 66\"/><path d=\"M104 40 L125 12 L146 44 L134 38 L125 50 L114 38 L104 40Z\"/><path d=\"M40 70 L55 48 L68 62 L60 60 L55 68 L48 60Z\"/><path d=\"M0 114 H300\"/><path d=\"M220 112 V104 M212.0 104 L220 95.5 L228.0 104Z M215.0 98.5 L220 82 L225.0 98.5Z M246 112 V104 M238.0 104 L246 95.5 L254.0 104Z M241.0 98.5 L246 82 L251.0 98.5Z M272 112 V104 M264.0 104 L272 95.5 L280.0 104Z M267.0 98.5 L272 82 L277.0 98.5Z\"/>","<path d=\"M0 96 C60 66 100 88 150 78 S250 56 300 80\"/><path d=\"M110 108 C96 50 190 50 176 108\"/><circle cx=\"104\" cy=\"92\" r=\"2.2\"/><circle cx=\"104\" cy=\"76\" r=\"2.2\"/><circle cx=\"110\" cy=\"62\" r=\"2.2\"/><circle cx=\"122\" cy=\"54\" r=\"2.2\"/><circle cx=\"164\" cy=\"54\" r=\"2.2\"/><circle cx=\"176\" cy=\"62\" r=\"2.2\"/><circle cx=\"182\" cy=\"76\" r=\"2.2\"/><circle cx=\"182\" cy=\"92\" r=\"2.2\"/><path d=\"M210 20 C240 30 220 54 262 60 S290 90 300 100\"/>","<path d=\"M176 108 C173 73.0 179 52.0 178 38\"/><ellipse cx=\"178\" cy=\"32\" rx=\"3\" ry=\"8\"/><path d=\"M192 108 C189 65.0 195 39.2 194 22\"/><ellipse cx=\"194\" cy=\"16\" rx=\"3\" ry=\"8\"/><path d=\"M206 108 C203 78.0 209 60.0 208 48\"/><ellipse cx=\"208\" cy=\"42\" rx=\"3\" ry=\"8\"/><path d=\"M222 108 C219 68.0 225 44.0 224 28\"/><ellipse cx=\"224\" cy=\"22\" rx=\"3\" ry=\"8\"/><path d=\"M238 108 C235 76.0 241 56.8 240 44\"/><ellipse cx=\"240\" cy=\"38\" rx=\"3\" ry=\"8\"/><path d=\"M256 108 C253 63.0 259 36.0 258 18\"/><ellipse cx=\"258\" cy=\"12\" rx=\"3\" ry=\"8\"/><path d=\"M272 108 C269 80.0 275 63.199999999999996 274 52\"/><ellipse cx=\"274\" cy=\"46\" rx=\"3\" ry=\"8\"/><path d=\"M0 108 q15 -6 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0\"/><path d=\"M20 92 q15 -6 30 0 t30 0 t30 0\"/>","<path d=\"M0 110 V72 H24 V52 H44 V82 H60 V44 L70 22 L80 44 V92 H102 V62 H128 V86 H150 V46 H176 V72 H200 V56 H226 V96 H250 V66 H274 V82 H300 V110\"/><path d=\"M70 22 V12 M66 16 H74\"/><path d=\"M160 46 V36 H168 V46\"/><path d=\"M0 110 H300\"/><path d=\"M30 62 h6 M30 70 h6\"/><path d=\"M108 62 h6 M108 70 h6\"/><path d=\"M206 62 h6 M206 70 h6\"/><path d=\"M256 62 h6 M256 70 h6\"/>","<path d=\"M20 108 C70 76 150 72 215 108\"/><path d=\"M112 88 C108 68 112 54 120 38\"/><path d=\"M120 38 C102 26 86 30 76 44 M120 38 C130 20 148 20 158 30 M120 38 C106 18 90 16 80 20 M120 38 C132 38 146 44 152 54\"/><circle cx=\"238\" cy=\"34\" r=\"15\"/><path d=\"M238 8 V0 M264 34 H274 M212 34 H202 M256 16 L263 9 M220 16 L213 9\"/><path d=\"M180 112 q10 -5 20 0 t20 0 t20 0 t20 0 t20 0\"/><path d=\"M0 112 q10 -5 20 0 t20 0 t20 0\"/>","<path d=\"M150 108 V100 M138.0 100 L150 80.5 L162.0 100Z M141.0 85.5 L150 58 L159.0 85.5Z M178 108 V100 M166.0 100 L178 80.5 L190.0 100Z M169.0 85.5 L178 58 L187.0 85.5Z M206 108 V100 M194.0 100 L206 80.5 L218.0 100Z M197.0 85.5 L206 58 L215.0 85.5Z M234 108 V100 M222.0 100 L234 80.5 L246.0 100Z M225.0 85.5 L234 58 L243.0 85.5Z M262 108 V100 M250.0 100 L262 80.5 L274.0 100Z M253.0 85.5 L262 58 L271.0 85.5Z M288 108 V100 M276.0 100 L288 80.5 L300.0 100Z M279.0 85.5 L288 58 L297.0 85.5Z\"/><path d=\"M20 108 C20 80 80 80 80 108 M30 108 L40 90 M60 108 L52 90\"/><path d=\"M0 108 H300\"/><path d=\"M90 100 H140 M96 94 H136\"/>","<path d=\"M30 108 V66 L62 44 L94 66 V108 Z M48 108 V82 H76 V108 M48 82 L76 108 M76 82 L48 108\"/><path d=\"M62 44 V36\"/><path d=\"M150 108 V84\"/><path d=\"M175 108 V84\"/><path d=\"M200 108 V84\"/><path d=\"M225 108 V84\"/><path d=\"M250 108 V84\"/><path d=\"M275 108 V84\"/><path d=\"M300 108 V84\"/><path d=\"M150 90 H300 M150 100 H300\"/><path d=\"M0 108 H300\"/><path d=\"M110 108 q10 -14 20 0\"/>","<path d=\"M180 108 V76 L212 52 L244 76 V108 Z M196 108 V90 H212 V108 M222 78 H234 V92 H222Z M232 56 V44 H240 V62\"/><path d=\"M80 108 L92 48 L104 108 M92 48 L66 26 M92 48 L118 70 M92 48 L118 26 M92 48 L66 70\"/><path d=\"M0 108 H300\"/><path d=\"M0 116 C60 112 120 118 300 112\"/>","<circle cx=\"232\" cy=\"58\" r=\"40\"/><path d=\"M214 46 C214 26 250 26 250 46 C250 60 232 60 232 76\"/><circle cx=\"232\" cy=\"90\" r=\"2.6\"/><path d=\"M14 108 C60 96 100 112 150 88\" stroke-dasharray=\"1 9\"/><path d=\"M0 114 H300\"/>"];
 
   var KEY = 'rdr2-story-checklist-v1';
-  var state = {done:{}, chapter:null, hide:false, noHonor:false, noSpecial:false, noStrangers:false, ack:false};
+  var state = {done:{}, chapter:null, hide:false, noHonor:false, noSpecial:false, noStrangers:false, ack:false, sound:true};
   var TOTAL = 0;
 
   function load(){
@@ -662,6 +712,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         state.noSpecial = !!p.noSpecial;
         state.noStrangers = !!p.noStrangers;
         state.ack = !!p.ack;
+        state.sound = p.sound !== false;
       }
     }catch(e){}
   }
@@ -672,7 +723,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     clearTimeout(remoteTimer);
     remoteTimer = setTimeout(function(){
       try{
-        remoteDoc.set({done:Object.keys(state.done), chapter:state.chapter == null ? 0 : state.chapter, hide:!!state.hide, noHonor:!!state.noHonor, noSpecial:!!state.noSpecial, noStrangers:!!state.noStrangers, ack:!!state.ack}).catch(function(){});
+        remoteDoc.set({done:Object.keys(state.done), chapter:state.chapter == null ? 0 : state.chapter, hide:!!state.hide, noHonor:!!state.noHonor, noSpecial:!!state.noSpecial, noStrangers:!!state.noStrangers, ack:!!state.ack, sound:!!state.sound}).catch(function(){});
       }catch(e){}
     }, 400);
   }
@@ -684,6 +735,73 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   }
 
   var q = '';
+  /* optional sounds, synthesized in the browser (no audio files) */
+  var AC = null, NB = null;
+  function audio(){
+    if(!state.sound) return null;
+    try{
+      if(!AC){
+        var C = window.AudioContext || window.webkitAudioContext;
+        if(!C) return null;
+        AC = new C();
+      }
+      if(AC.state === 'suspended') AC.resume();
+      return AC;
+    }catch(e){ return null; }
+  }
+  function noiseBuf(c){
+    if(!NB){
+      NB = c.createBuffer(1, Math.floor(c.sampleRate * 0.4), c.sampleRate);
+      var d = NB.getChannelData(0);
+      for(var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    return NB;
+  }
+  function burst(c, t, o){
+    var src = c.createBufferSource(); src.buffer = noiseBuf(c);
+    var f = c.createBiquadFilter(); f.type = o.type; f.frequency.value = o.freq; f.Q.value = o.q || 0.7;
+    var g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(o.vol, t + (o.atk || 0.004));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur);
+    src.connect(f); f.connect(g); g.connect(c.destination);
+    src.start(t); src.stop(t + o.dur + 0.02);
+  }
+  function tone(c, t, o){
+    var os = c.createOscillator(); os.type = o.type || 'sine';
+    os.frequency.setValueAtTime(o.f0, t);
+    if(o.f1) os.frequency.exponentialRampToValueAtTime(o.f1, t + o.dur);
+    var g = c.createGain();
+    g.gain.setValueAtTime(o.vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur);
+    os.connect(g); g.connect(c.destination);
+    os.start(t); os.stop(t + o.dur + 0.02);
+  }
+  function sfx(kind){
+    var c = audio();
+    if(!c) return;
+    var t = c.currentTime;
+    try{
+      if(kind === 'stamp'){
+        tone(c, t, {f0:150, f1:48, dur:0.16, vol:0.5});
+        burst(c, t, {type:'lowpass', freq:1100, vol:0.35, dur:0.07});
+      } else if(kind === 'untick'){
+        burst(c, t, {type:'highpass', freq:2600, vol:0.1, dur:0.06});
+        tone(c, t, {f0:520, f1:380, dur:0.07, vol:0.04});
+      } else if(kind === 'complete'){
+        var u = t + 0.08;
+        tone(c, u, {f0:130, f1:50, dur:0.2, vol:0.4});
+        burst(c, u, {type:'lowpass', freq:900, vol:0.2, dur:0.06});
+        tone(c, u, {f0:523.25, dur:0.8, vol:0.1});
+        tone(c, u, {f0:783.99, dur:0.9, vol:0.07});
+        tone(c, u, {f0:1046.5, dur:0.6, vol:0.04});
+      } else if(kind === 'open'){
+        burst(c, t, {type:'bandpass', freq:1800, q:0.6, vol:0.07, dur:0.12, atk:0.02});
+      } else {
+        burst(c, t, {type:'bandpass', freq:2200, q:0.7, vol:0.11, dur:0.14, atk:0.025});
+      }
+    }catch(e){}
+  }
   var advTimer = null;
   var lastStory = 0;
   var secStory = document.getElementById('secStory');
@@ -697,9 +815,9 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     secStrangers.tabIndex = isStr ? 0 : -1;
     tabwrapEl.hidden = isStr;
   }
-  secStory.addEventListener('click', function(){ select(lastStory, {top:true}); });
+  secStory.addEventListener('click', function(){ select(lastStory, {top:true, sfx:true}); });
   secStrangers.addEventListener('click', function(){
-    for(var i = 0; i < CH.length; i++){ if(CH[i].task){ select(i, {top:true}); return; } }
+    for(var i = 0; i < CH.length; i++){ if(CH[i].task){ select(i, {top:true, sfx:true}); return; } }
   });
   var allowAnim = false;
   var undoStack = [];
@@ -715,6 +833,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     updateUndoBtn();
     if(!snap) return;
     clearTimeout(advTimer);
+    sfx('untick');
     var done = {};
     snap.forEach(function(k){ done[k] = 1; });
     var target = -1;
@@ -738,6 +857,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   var credits = document.getElementById('credits');
   var creditsBack = null;
   function openCredits(){
+    sfx('open');
     creditsBack = document.activeElement;
     credits.hidden = false;
     document.getElementById('creditsClose').focus();
@@ -752,6 +872,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   var filtersEl = document.getElementById('filters');
   var filtersBack = null;
   function openFilters(){
+    sfx('open');
     filtersBack = document.activeElement;
     filtersEl.hidden = false;
     document.getElementById('hide').focus();
@@ -766,6 +887,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   var dataEl = document.getElementById('data');
   var dataBack = null;
   function openData(){
+    sfx('open');
     dataBack = document.activeElement;
     dataEl.hidden = false;
     document.getElementById('exportBtn').focus();
@@ -777,6 +899,86 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   document.getElementById('dataBtn').addEventListener('click', openData);
   document.getElementById('dataClose').addEventListener('click', closeData);
   dataEl.addEventListener('click', function(e){ if(e.target === dataEl) closeData(); });
+  /* stats */
+  var statsEl = document.getElementById('stats');
+  var statsBack = null;
+  function pctOf(d, n){ return n ? Math.round(d / n * 100) : 0; }
+  function statRow(label, d, n, hot){
+    var r = el('div','srow');
+    r.appendChild(el('span','sl', label));
+    r.appendChild(el('span','sv', d + ' of ' + n + ' (' + pctOf(d, n) + '%)'));
+    var b = el('div','sbar');
+    var i = el('i');
+    i.style.width = pctOf(d, n) + '%';
+    if(hot) i.className = 'hot';
+    b.appendChild(i);
+    r.appendChild(b);
+    return r;
+  }
+  function renderStats(){
+    var body = document.getElementById('statsBody');
+    while(body.firstChild) body.removeChild(body.firstChild);
+    var all = {d:0,n:0}, story = {d:0,n:0}, str = {d:0,n:0}, honor = {d:0,n:0}, stories = {d:0,n:0}, multi = {d:0,n:0};
+    var chapters = [];
+    CH.forEach(function(c){
+      var d = 0, n = c.items.length;
+      c.items.forEach(function(it){
+        var dn = !!state.done[it.id];
+        if(dn) d++;
+        if(it.honor){ honor.n++; if(dn) honor.d++; }
+      });
+      all.d += d; all.n += n;
+      if(c.task){
+        str.d += d; str.n += n;
+        c.units.forEach(function(u){
+          var fin = u.items.every(function(x){ return !!state.done[x.id]; });
+          stories.n++; if(fin) stories.d++;
+          if(u.group){ multi.n++; if(fin) multi.d++; }
+        });
+      } else {
+        story.d += d; story.n += n;
+        chapters.push({name:c.name, d:d, n:n});
+      }
+    });
+    body.appendChild(el('h3','sh','Everything'));
+    body.appendChild(statRow('All missions', all.d, all.n));
+    body.appendChild(el('h3','sh','Story missions'));
+    body.appendChild(statRow('Main story', story.d, story.n));
+    var close = null;
+    chapters.forEach(function(c){
+      if(c.d < c.n && (!close || (c.n - c.d) < (close.n - close.d))) close = c;
+    });
+    chapters.forEach(function(c){ body.appendChild(statRow(c.name, c.d, c.n, close === c)); });
+    body.appendChild(el('p','snote', close ? 'Closest to done: ' + close.name + ', ' + (close.n - close.d) + ' left (shown in red).' : 'Every story chapter is complete.'));
+    body.appendChild(el('h3','sh','Strangers'));
+    body.appendChild(statRow('All steps', str.d, str.n));
+    body.appendChild(statRow('Stories finished', stories.d, stories.n));
+    body.appendChild(statRow('Multi-part stories finished', multi.d, multi.n));
+    body.appendChild(el('p','snote', (str.n - str.d) + ' Stranger steps left. The Western Stranger trophy needs 10 multi-part stories.'));
+    body.appendChild(el('h3','sh','Optional honor missions'));
+    body.appendChild(statRow('Honor missions', honor.d, honor.n));
+    body.appendChild(el('p','snote','Counts include everything, even items hidden by your filters.'));
+  }
+  function openStats(){
+    sfx('open');
+    statsBack = document.activeElement;
+    renderStats();
+    statsEl.hidden = false;
+    document.getElementById('statsClose').focus();
+  }
+  function closeStats(){
+    statsEl.hidden = true;
+    if(statsBack && statsBack.focus) statsBack.focus();
+  }
+  document.getElementById('statsBtn').addEventListener('click', openStats);
+  document.getElementById('statsClose').addEventListener('click', closeStats);
+  statsEl.addEventListener('click', function(e){ if(e.target === statsEl) closeStats(); });
+  document.getElementById('soundBtn').addEventListener('click', function(){
+    state.sound = !state.sound;
+    save();
+    updateAll();
+    if(state.sound) sfx('rustle');
+  });
   var tabsEl = document.getElementById('tabs');
   var panelsEl = document.getElementById('panels');
   var hideBtn = document.getElementById('hide');
@@ -794,6 +996,14 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       var slug = LEGACY[Number(m[1]) - 1];
       (SIDS[slug] || []).forEach(function(id){ done[id] = 1; });
     });
+    Object.keys(done).forEach(function(k){
+      if(k.indexOf('s_') !== 0) return;
+      var sl = k.slice(2);
+      if(SIDS[sl] && SIDS[sl].indexOf(k) < 0){
+        delete done[k];
+        SIDS[sl].forEach(function(id){ done[id] = 1; });
+      }
+    });
   }
 
   DATA.forEach(function(c, ci){
@@ -809,7 +1019,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     tab.appendChild(el('span','nm',c.name));
     ch.tabCnt = el('span','cnt','');
     tab.appendChild(ch.tabCnt);
-    tab.addEventListener('click', function(){ select(ci,{top:true}); });
+    tab.addEventListener('click', function(){ select(ci,{top:true,sfx:true}); });
     tabsEl.appendChild(tab);
     ch.tab = tab;
 
@@ -1031,6 +1241,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   function toggle(it, ch){
     pushUndo();
     var nowDone = !state.done[it.id];
+    sfx(nowDone ? 'stamp' : 'untick');
     if(nowDone){
       state.done[it.id] = 1;
       if(state.hide){
@@ -1053,9 +1264,10 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       setTimeout(function(){ it.li.classList.remove('stamp'); }, 700);
     }
     if(nowDone && ch.items.every(function(x){ return isOff(x) || state.done[x.id]; })){
+      sfx('complete');
       var ci = CH.indexOf(ch);
       if(ci < CH.length-1 && !CH[ci+1].tab.hidden && state.chapter === ci){
-        advTimer = setTimeout(function(){ if(state.chapter === ci) select(ci+1,{top:true}); }, 450);
+        advTimer = setTimeout(function(){ if(state.chapter === ci) select(ci+1,{top:true,sfx:true}); }, 450);
       }
     }
   }
@@ -1157,11 +1369,15 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     var fb = document.getElementById('filtersBtn');
     fb.textContent = fc ? 'Filters (' + fc + ')' : 'Filters';
     fb.setAttribute('aria-pressed', fc ? 'true' : 'false');
+    var sb = document.getElementById('soundBtn');
+    sb.textContent = state.sound ? 'Sound: on' : 'Sound: off';
+    sb.setAttribute('aria-pressed', state.sound ? 'true' : 'false');
     measureGroups();
   }
 
   function select(ci, opts){
     opts = opts || {};
+    if(opts.sfx) sfx('rustle');
     ci = Math.max(0, Math.min(CH.length-1, ci));
     CH.forEach(function(c, i){
       var on = i === ci;
@@ -1258,8 +1474,9 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     allowAnim = true;
     updateAll();
     allowAnim = false;
+    sfx('complete');
     if(ci < CH.length - 1 && !CH[ci+1].tab.hidden){
-      advTimer = setTimeout(function(){ if(state.chapter === ci) select(ci + 1, {top:true}); }, 450);
+      advTimer = setTimeout(function(){ if(state.chapter === ci) select(ci + 1, {top:true,sfx:true}); }, 450);
     }
   });
   markBtn.addEventListener('blur', disarmMark);
@@ -1366,6 +1583,11 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   resetBtn.addEventListener('blur', disarm);
 
   document.addEventListener('keydown', function(e){
+    if(!statsEl.hidden){
+      if(e.key === 'Escape'){ e.preventDefault(); closeStats(); }
+      else if(e.key === 'Tab'){ e.preventDefault(); document.getElementById('statsClose').focus(); }
+      return;
+    }
     if(!dataEl.hidden){
       if(e.key === 'Escape'){ e.preventDefault(); closeData(); }
       else if(e.key === 'Tab'){
@@ -1419,7 +1641,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       while(next >= 0 && next <= CH.length-1 && CH[next].tab.hidden) next += (k === 'ArrowRight' ? 1 : -1);
       if(next < 0 || next > CH.length-1) return;
       e.preventDefault();
-      select(next, {focusTab: !!(a && a.classList.contains('tab'))});
+      select(next, {sfx:true, focusTab: !!(a && a.classList.contains('tab'))});
     } else if((k === 'ArrowDown' || k === 'ArrowUp') && a && a.classList.contains('row')){
       var btns = navButtons(CH[state.chapter]);
       var idx = btns.indexOf(a);
@@ -1471,6 +1693,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         state.noSpecial = !!d.noSpecial;
         state.noStrangers = !!d.noStrangers;
         if(d.ack){ state.ack = true; closeNotice(); }
+        if(typeof d.sound === 'boolean') state.sound = d.sound;
         if(typeof d.chapter === 'number') state.chapter = d.chapter;
         remoteDoc = ref;
         try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
