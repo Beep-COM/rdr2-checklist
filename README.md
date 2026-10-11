@@ -20,6 +20,8 @@ An unofficial checklist for the 110 main story missions and 26 Strangers side mi
 - A ↗ link on every mission to its GTABase page
 - Undo for your last tick, chapter shortcut, import or reset (`Ctrl+Z`)
 - A Data pop-up in the footer to export and import your progress as a small JSON file, or reset it
+- A Stats pop-up with completion per chapter, Stranger stories finished, and which chapter is closest to done
+- Optional sound effects (a stamp thud when you tick a mission, a rustle when you change chapter), with a Sound on/off switch in the footer
 - A Credits pop-up, and a first-visit notice that the page was made entirely by AI
 - Light and dark appearance, following your system setting
 - Keyboard controls: `←` `→` change chapter, `↑` `↓` move between missions, `Space` checks one off
@@ -37,7 +39,8 @@ Your progress is saved in your browser's local storage, so it stays on that devi
 ## Credits
 
 - **Mission list and guide links:** [GTABase](https://www.gtabase.com/red-dead-redemption-2/missions/)
-- **Stranger parts and missable warnings:** [TrueAchievements walkthrough](https://www.trueachievements.com/game/Red-Dead-Redemption-2/walkthrough/4), which may differ slightly from the in-game journal
+- **Stranger parts:** [GTABase Stranger pages](https://www.gtabase.com/red-dead-redemption-2/strangers/)
+- **Missable warnings:** [TrueAchievements walkthrough](https://www.trueachievements.com/game/Red-Dead-Redemption-2/walkthrough/4). Parts and warnings may differ slightly from the in-game journal
 - **Built by:** Claude, made by Anthropic
 - **Fonts:** IM Fell English by Igino Marini and Zilla Slab by Typotheque for Mozilla, both open source and loaded through Google Fonts. The page falls back to Georgia if they can't load.
 
