@@ -8,7 +8,7 @@ An unofficial checklist for the 110 main story missions and 26 Strangers side mi
 ## Features
 
 - All 110 main story missions across 8 chapters, in story order, with the mission giver shown under each title
-- Two sections, Story Missions (with a tab per chapter) and Strangers: the 26 side missions (every story is one entry with a dropdown: an intro cutscene to mark that you've started it, then its parts), grouped by the chapter they unlock in, with a hint showing whether each group is unlocked yet (the optional time-sensitive ones are already in the story chapters)
+- Two sections, Story Missions (with a tab per chapter) and Strangers: the 26 side missions (longer stories are one entry with a dropdown for parts I, II, III and so on; the four whose quest just runs in the background after the intro cutscene are a single entry you tap once for "in progress" and again when finished, and in-progress ones don't count as done), grouped by the chapter they unlock in, with a hint showing whether each group is unlocked yet (the optional time-sensitive ones are already in the story chapters)
 - A dotted trail through the missions that turns solid as you complete them, with a red marker for the next mission
 - Chapter tabs that always fit on screen, and an automatic jump to the next chapter when you finish one
 - Chapter progress shading behind each chapter title, plus an overall progress bar
