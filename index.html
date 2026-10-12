@@ -231,7 +231,8 @@ main{position:relative;z-index:1;flex:1}
 .opt em{display:block;margin-top:1px;font:italic .98rem/1.3 'IM Fell English',Georgia,serif;color:var(--ink-soft)}
 .opt input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .notice-card .opt + .notice-ok{margin-top:16px}
-.links{display:inline-flex;gap:18px}
+.links{display:inline-flex;flex-wrap:wrap;gap:6px 18px}
+a.credits-link{display:inline-block;line-height:1.4}
 .drow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px dotted var(--trail)}
 .drow strong{display:block;font-weight:500;font-size:1.05rem}
 .drow em{display:block;margin-top:1px;font:italic .98rem/1.3 'IM Fell English',Georgia,serif;color:var(--ink-soft)}
@@ -416,7 +417,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         <span class="hint"><span class="key">/</span><span class="plabel">Search</span></span>
         <span class="hint"><span class="keys"><span class="key">Ctrl</span><span class="key">Z</span></span><span class="plabel">Undo</span></span>
       </div>
-      <span class="links"><button class="credits-link" id="statsBtn" type="button" aria-haspopup="dialog">Stats</button><button class="credits-link" id="dataBtn" type="button" aria-haspopup="dialog">Data</button><button class="credits-link" id="creditsBtn" type="button">Credits</button><button class="credits-link" id="soundBtn" type="button" aria-pressed="true">Sound: on</button></span>
+      <span class="links"><button class="credits-link" id="statsBtn" type="button" aria-haspopup="dialog">Stats</button><button class="credits-link" id="dataBtn" type="button" aria-haspopup="dialog">Data</button><button class="credits-link" id="creditsBtn" type="button">Credits</button><button class="credits-link" id="soundBtn" type="button" aria-pressed="true">Sound: on</button><a class="credits-link" id="repoLink" href="https://github.com/Beep-COM/rdr2-checklist" target="_blank" rel="noopener noreferrer" title="Open the GitHub repository">GitHub</a></span>
     </div>
   </div>
 </footer>
@@ -457,6 +458,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     <ul>
       <li><strong>Mission list and guide links:</strong> <a href="https://www.gtabase.com/red-dead-redemption-2/missions/" target="_blank" rel="noopener noreferrer">GTABase</a>. Each &#8599; link on a mission opens its page there.</li>
       <li><strong>Stranger parts:</strong> the steps within longer Stranger stories follow the <a href="https://www.gtabase.com/red-dead-redemption-2/strangers/" target="_blank" rel="noopener noreferrer">GTABase Stranger pages</a>, and the missable warnings follow the <a href="https://www.trueachievements.com/game/Red-Dead-Redemption-2/walkthrough/4" target="_blank" rel="noopener noreferrer">TrueAchievements walkthrough</a>. They may differ slightly from the in-game journal.</li>
+      <li><strong>Source code:</strong> <a href="https://github.com/Beep-COM/rdr2-checklist" target="_blank" rel="noopener noreferrer">github.com/Beep-COM/rdr2-checklist</a></li>
       <li><strong>Built by AI:</strong> designed, written and coded entirely by Claude, made by Anthropic, from a conversation with a person.</li>
       <li><strong>The game:</strong> Red Dead Redemption 2 is made by Rockstar Games. This is an unofficial fan project, not affiliated with or endorsed by Rockstar Games or Take-Two Interactive. It uses no game assets; the map look is drawn from scratch.</li>
       <li><strong>Fonts:</strong> IM Fell English by Igino Marini and Zilla Slab by Typotheque for Mozilla, both open source through Google Fonts.</li>
@@ -918,7 +920,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   function renderStats(){
     var body = document.getElementById('statsBody');
     while(body.firstChild) body.removeChild(body.firstChild);
-    var all = {d:0,n:0}, story = {d:0,n:0}, str = {d:0,n:0}, honor = {d:0,n:0}, stories = {d:0,n:0}, multi = {d:0,n:0};
+    var all = {d:0,n:0}, story = {d:0,n:0}, str = {d:0,n:0}, honor = {d:0,n:0}, stories = {d:0,n:0}, multi = {d:0,n:0}, started = 0;
     var chapters = [];
     CH.forEach(function(c){
       var d = 0, n = c.items.length;
@@ -933,7 +935,9 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         c.units.forEach(function(u){
           var fin = u.items.every(function(x){ return !!state.done[x.id]; });
           stories.n++; if(fin) stories.d++;
-          if(u.group){ multi.n++; if(fin) multi.d++; }
+          var real = u.items.filter(function(x){ return !x.intro; }).length;
+          if(u.items.some(function(x){ return !!state.done[x.id]; })) started++;
+          if(real > 1){ multi.n++; if(fin) multi.d++; }
         });
       } else {
         story.d += d; story.n += n;
@@ -952,6 +956,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     body.appendChild(el('p','snote', close ? 'Closest to done: ' + close.name + ', ' + (close.n - close.d) + ' left (shown in red).' : 'Every story chapter is complete.'));
     body.appendChild(el('h3','sh','Strangers'));
     body.appendChild(statRow('All steps', str.d, str.n));
+    body.appendChild(statRow('Stories started', started, stories.n));
     body.appendChild(statRow('Stories finished', stories.d, stories.n));
     body.appendChild(statRow('Multi-part stories finished', multi.d, multi.n));
     body.appendChild(el('p','snote', (str.n - str.d) + ' Stranger steps left. The Western Stranger trophy needs 10 multi-part stories.'));
@@ -1003,6 +1008,10 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         delete done[k];
         SIDS[sl].forEach(function(id){ done[id] = 1; });
       }
+    });
+    Object.keys(SIDS).forEach(function(sl){
+      var ids = SIDS[sl];
+      if(ids.length > 1 && !done[ids[0]] && ids.slice(1).some(function(id){ return done[id]; })) done[ids[0]] = 1;
     });
   }
 
@@ -1095,7 +1104,20 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       btn.addEventListener('click', function(){ toggle(it, ch); });
       return btn;
     }
-    c.items.forEach(function(r){
+    var rowList = c.items;
+    if(c.task){
+      rowList = [];
+      var seenSlug = {};
+      c.items.forEach(function(r0){
+        if(!seenSlug[r0[3]]){
+          seenSlug[r0[3]] = 1;
+          var b0 = r0[5] ? r0[0].slice(0, r0[0].lastIndexOf(', ')) : r0[0];
+          rowList.push([b0 + ', Intro', r0[1], r0[2], r0[3], r0[4], 0]);
+        }
+        rowList.push(r0);
+      });
+    }
+    rowList.forEach(function(r){
       if(c.task && r[4] !== curGroup){
         curGroup = r[4];
         gi++;
@@ -1108,9 +1130,10 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         list.appendChild(gl);
       }
       var it;
-      if(c.task){ tcount++; it = {id:'s_' + r[3] + (r[5] ? '_' + r[5] : ''), stranger:true}; (SIDS[r[3]] = SIDS[r[3]] || []).push(it.id); }
+      if(c.task){ tcount++; it = {id:'s_' + r[3] + (r[5] != null ? '_' + r[5] : ''), stranger:true}; (SIDS[r[3]] = SIDS[r[3]] || []).push(it.id); }
       else { counter++; it = {id:'m'+counter, num:counter}; }
       it.honor = r[2]==='h';
+      it.intro = r[5] === 0;
       it.grp = gi;
       if(c.task) ch.heads[ch.heads.length - 1].items.push(it);
       it.special = r[2]==='s';
@@ -1121,12 +1144,14 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       if(r[2]==='s') giver = (giver ? giver + ', ' : '') + 'Special Edition only';
       var slug = c.task ? r[3] : SLUGS[it.num - 1];
       var url = slug ? 'https://www.gtabase.com/red-dead-redemption-2/' + (c.task ? 'strangers/' : 'missions/') + slug : '';
-      var multi = !!(c.task && r[5]);
+      var multi = !!c.task;
 
       if(multi){
-        var cut = r[0].lastIndexOf(', ');
-        var base = r[0].slice(0, cut), roman = r[0].slice(cut + 2);
-        if(r[5] === 1){
+        var base, label;
+        if(r[5] === 0){ base = r[0].slice(0, r[0].lastIndexOf(', ')); label = 'Intro cutscene'; }
+        else if(r[5]){ var cut = r[0].lastIndexOf(', '); base = r[0].slice(0, cut); label = 'Part ' + r[0].slice(cut + 2); }
+        else { base = r[0]; label = 'Complete'; }
+        if(r[5] === 0){
           var u = {group:true, items:[], expanded:false};
           var gli = el('li','grpu');
           var prow = el('div','prow');
@@ -1165,7 +1190,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
           curUnit = u;
         }
         var sli = el('li');
-        var sbtn = makeCheck(it, {sub:true, title:'Part ' + roman, sr: base + ', '});
+        var sbtn = makeCheck(it, {sub:true, title:label, sr: base + ', '});
         sli.appendChild(sbtn);
         curUnit.parts.appendChild(sli);
         it.li = sli; it.btn = sbtn; it.u = curUnit;
@@ -1242,6 +1267,10 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     pushUndo();
     var nowDone = !state.done[it.id];
     sfx(nowDone ? 'stamp' : 'untick');
+    if(nowDone && it.u && it.u.group && it.u.items[0] !== it){
+      var first = it.u.items[0];
+      if(first.intro && !state.done[first.id]) state.done[first.id] = 1;
+    }
     if(nowDone){
       state.done[it.id] = 1;
       if(state.hide){
