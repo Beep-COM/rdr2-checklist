@@ -314,6 +314,9 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
 .sbar i.hot{background:var(--dot)}
 .snote{margin:6px 0 0;font:italic .98rem/1.35 'IM Fell English',Georgia,serif;color:var(--ink-soft)}
 #stats .notice-card{max-width:540px}
+.started .shape{background:var(--ink);box-shadow:inset 0 0 0 4px var(--paper-hi)}
+.started .num{color:var(--dot-text);font-style:italic;opacity:1}
+.lg.part{background:var(--bar-ink);box-shadow:inset 0 0 0 3px var(--bar)}
 </style>
 </head>
 <body>
@@ -408,6 +411,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         <li><i class="lg dia"></i>Optional honor mission (missable)</li>
         <li><svg class="lgw" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1.5L13 12.5H1Z"/><path d="M7 5.5v3M7 10.4v.1"/></svg>Missable Stranger</li>
         <li><i class="lg gold"></i>Next up</li>
+        <li><i class="lg part"></i>In progress</li>
         <li><i class="lg done"></i>Completed</li>
       </ul>
       <div class="hints" aria-hidden="true">
@@ -612,7 +616,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       ["The Noblest of Men, and a Woman, II", "Jim \"Boy\" Calloway and Theodore Levin", "", "the-noblest-of-men-and-a-woman-gunslingers", "Chapter 2", 2],
       ["The Noblest of Men, and a Woman, III", "Jim \"Boy\" Calloway and Theodore Levin", "", "the-noblest-of-men-and-a-woman-gunslingers", "Chapter 2", 3],
       ["The Noblest of Men, and a Woman, IV", "Jim \"Boy\" Calloway and Theodore Levin", "", "the-noblest-of-men-and-a-woman-gunslingers", "Chapter 2", 4],
-      ["All That Glitters", "Máximo Cristóbal Valdespino, treasure hunting", "", "all-that-giltters-treasure-hunt", "Chapter 2"],
+      ["All That Glitters", "Máximo Cristóbal Valdespino, intro cutscene only, the treasure hunting runs in the background. Tap once for in progress, again when finished", "i", "all-that-giltters-treasure-hunt", "Chapter 2"],
       ["Arcadia for Amateurs, I", "Albert Mason", "", "arcadia-for-amateurs", "Chapter 2", 1],
       ["Arcadia for Amateurs, II", "Albert Mason", "", "arcadia-for-amateurs", "Chapter 2", 2],
       ["Arcadia for Amateurs, III", "Albert Mason", "", "arcadia-for-amateurs", "Chapter 2", 3],
@@ -628,11 +632,9 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       ["Geology for Beginners, II", "Francis Sinclair", "", "geology-for-beginners-rock-carvings", "Chapter 2", 2],
       ["A Test of Faith, I", "Deborah MacGuiness, dinosaur bones collectible", "", "a-test-of-faith-dinosaur-bones", "Chapter 2", 1],
       ["A Test of Faith, II", "Deborah MacGuiness", "", "a-test-of-faith-dinosaur-bones", "Chapter 2", 2],
-      ["Smoking and Other Hobbies", "Phineas T. Ramsbottom, cigarette cards collectible, after Who Is Not Without Sin", "", "smoking-and-other-hobbies-cigarette-cards", "Chapter 2"],
-      ["A Better World, A New Friend, I", "Mrs. L. Hobbs, hunting requests, the fifth request opens in the Epilogue", "", "a-better-world-a-new-friend-hunting-requests", "Chapter 2", 1],
-      ["A Better World, A New Friend, II", "Mrs. L. Hobbs, only after the story ends", "", "a-better-world-a-new-friend-hunting-requests", "Chapter 2", 2],
-      ["A Fisher of Fish, I", "Jeremy Gill, legendary fish", "", "a-fisher-of-fish-legendary-fish", "Chapter 3", 1],
-      ["A Fisher of Fish, II", "Jeremy Gill", "", "a-fisher-of-fish-legendary-fish", "Chapter 3", 2],
+      ["Smoking and Other Hobbies", "Phineas T. Ramsbottom, intro cutscene only, the cigarette cards collectible runs in the background, after Who Is Not Without Sin. Tap once for in progress, again when finished", "i", "smoking-and-other-hobbies-cigarette-cards", "Chapter 2"],
+      ["A Better World, A New Friend", "Mrs. L. Hobbs, intro cutscene only, the hunting requests run in the background. Tap once for in progress, again when finished", "i", "a-better-world-a-new-friend-hunting-requests", "Chapter 2"],
+      ["A Fisher of Fish", "Jeremy Gill, intro cutscene only, the legendary fish quest runs in the background. Tap once for in progress, again when finished", "i", "a-fisher-of-fish-legendary-fish", "Chapter 3"],
       ["He’s British, of Course, I", "Margaret", "", "he-s-british-of-course", "Chapter 3", 1],
       ["He’s British, of Course, II", "Margaret", "", "he-s-british-of-course", "Chapter 3", 2],
       ["He’s British, of Course, III", "Margaret", "", "he-s-british-of-course", "Chapter 3", 3],
@@ -698,7 +700,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   var SCENES = ["<path d=\"M0 110 L55 48 L80 70 L125 12 L178 92 L205 64 L245 100 L300 66\"/><path d=\"M104 40 L125 12 L146 44 L134 38 L125 50 L114 38 L104 40Z\"/><path d=\"M40 70 L55 48 L68 62 L60 60 L55 68 L48 60Z\"/><path d=\"M0 114 H300\"/><path d=\"M220 112 V104 M212.0 104 L220 95.5 L228.0 104Z M215.0 98.5 L220 82 L225.0 98.5Z M246 112 V104 M238.0 104 L246 95.5 L254.0 104Z M241.0 98.5 L246 82 L251.0 98.5Z M272 112 V104 M264.0 104 L272 95.5 L280.0 104Z M267.0 98.5 L272 82 L277.0 98.5Z\"/>","<path d=\"M0 96 C60 66 100 88 150 78 S250 56 300 80\"/><path d=\"M110 108 C96 50 190 50 176 108\"/><circle cx=\"104\" cy=\"92\" r=\"2.2\"/><circle cx=\"104\" cy=\"76\" r=\"2.2\"/><circle cx=\"110\" cy=\"62\" r=\"2.2\"/><circle cx=\"122\" cy=\"54\" r=\"2.2\"/><circle cx=\"164\" cy=\"54\" r=\"2.2\"/><circle cx=\"176\" cy=\"62\" r=\"2.2\"/><circle cx=\"182\" cy=\"76\" r=\"2.2\"/><circle cx=\"182\" cy=\"92\" r=\"2.2\"/><path d=\"M210 20 C240 30 220 54 262 60 S290 90 300 100\"/>","<path d=\"M176 108 C173 73.0 179 52.0 178 38\"/><ellipse cx=\"178\" cy=\"32\" rx=\"3\" ry=\"8\"/><path d=\"M192 108 C189 65.0 195 39.2 194 22\"/><ellipse cx=\"194\" cy=\"16\" rx=\"3\" ry=\"8\"/><path d=\"M206 108 C203 78.0 209 60.0 208 48\"/><ellipse cx=\"208\" cy=\"42\" rx=\"3\" ry=\"8\"/><path d=\"M222 108 C219 68.0 225 44.0 224 28\"/><ellipse cx=\"224\" cy=\"22\" rx=\"3\" ry=\"8\"/><path d=\"M238 108 C235 76.0 241 56.8 240 44\"/><ellipse cx=\"240\" cy=\"38\" rx=\"3\" ry=\"8\"/><path d=\"M256 108 C253 63.0 259 36.0 258 18\"/><ellipse cx=\"258\" cy=\"12\" rx=\"3\" ry=\"8\"/><path d=\"M272 108 C269 80.0 275 63.199999999999996 274 52\"/><ellipse cx=\"274\" cy=\"46\" rx=\"3\" ry=\"8\"/><path d=\"M0 108 q15 -6 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0\"/><path d=\"M20 92 q15 -6 30 0 t30 0 t30 0\"/>","<path d=\"M0 110 V72 H24 V52 H44 V82 H60 V44 L70 22 L80 44 V92 H102 V62 H128 V86 H150 V46 H176 V72 H200 V56 H226 V96 H250 V66 H274 V82 H300 V110\"/><path d=\"M70 22 V12 M66 16 H74\"/><path d=\"M160 46 V36 H168 V46\"/><path d=\"M0 110 H300\"/><path d=\"M30 62 h6 M30 70 h6\"/><path d=\"M108 62 h6 M108 70 h6\"/><path d=\"M206 62 h6 M206 70 h6\"/><path d=\"M256 62 h6 M256 70 h6\"/>","<path d=\"M20 108 C70 76 150 72 215 108\"/><path d=\"M112 88 C108 68 112 54 120 38\"/><path d=\"M120 38 C102 26 86 30 76 44 M120 38 C130 20 148 20 158 30 M120 38 C106 18 90 16 80 20 M120 38 C132 38 146 44 152 54\"/><circle cx=\"238\" cy=\"34\" r=\"15\"/><path d=\"M238 8 V0 M264 34 H274 M212 34 H202 M256 16 L263 9 M220 16 L213 9\"/><path d=\"M180 112 q10 -5 20 0 t20 0 t20 0 t20 0 t20 0\"/><path d=\"M0 112 q10 -5 20 0 t20 0 t20 0\"/>","<path d=\"M150 108 V100 M138.0 100 L150 80.5 L162.0 100Z M141.0 85.5 L150 58 L159.0 85.5Z M178 108 V100 M166.0 100 L178 80.5 L190.0 100Z M169.0 85.5 L178 58 L187.0 85.5Z M206 108 V100 M194.0 100 L206 80.5 L218.0 100Z M197.0 85.5 L206 58 L215.0 85.5Z M234 108 V100 M222.0 100 L234 80.5 L246.0 100Z M225.0 85.5 L234 58 L243.0 85.5Z M262 108 V100 M250.0 100 L262 80.5 L274.0 100Z M253.0 85.5 L262 58 L271.0 85.5Z M288 108 V100 M276.0 100 L288 80.5 L300.0 100Z M279.0 85.5 L288 58 L297.0 85.5Z\"/><path d=\"M20 108 C20 80 80 80 80 108 M30 108 L40 90 M60 108 L52 90\"/><path d=\"M0 108 H300\"/><path d=\"M90 100 H140 M96 94 H136\"/>","<path d=\"M30 108 V66 L62 44 L94 66 V108 Z M48 108 V82 H76 V108 M48 82 L76 108 M76 82 L48 108\"/><path d=\"M62 44 V36\"/><path d=\"M150 108 V84\"/><path d=\"M175 108 V84\"/><path d=\"M200 108 V84\"/><path d=\"M225 108 V84\"/><path d=\"M250 108 V84\"/><path d=\"M275 108 V84\"/><path d=\"M300 108 V84\"/><path d=\"M150 90 H300 M150 100 H300\"/><path d=\"M0 108 H300\"/><path d=\"M110 108 q10 -14 20 0\"/>","<path d=\"M180 108 V76 L212 52 L244 76 V108 Z M196 108 V90 H212 V108 M222 78 H234 V92 H222Z M232 56 V44 H240 V62\"/><path d=\"M80 108 L92 48 L104 108 M92 48 L66 26 M92 48 L118 70 M92 48 L118 26 M92 48 L66 70\"/><path d=\"M0 108 H300\"/><path d=\"M0 116 C60 112 120 118 300 112\"/>","<circle cx=\"232\" cy=\"58\" r=\"40\"/><path d=\"M214 46 C214 26 250 26 250 46 C250 60 232 60 232 76\"/><circle cx=\"232\" cy=\"90\" r=\"2.6\"/><path d=\"M14 108 C60 96 100 112 150 88\" stroke-dasharray=\"1 9\"/><path d=\"M0 114 H300\"/>"];
 
   var KEY = 'rdr2-story-checklist-v1';
-  var state = {done:{}, chapter:null, hide:false, noHonor:false, noSpecial:false, noStrangers:false, ack:false, sound:true};
+  var state = {done:{}, chapter:null, hide:false, noHonor:false, noSpecial:false, noStrangers:false, ack:false, sound:true, prog:{}};
   var TOTAL = 0;
 
   function load(){
@@ -715,6 +717,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         state.noStrangers = !!p.noStrangers;
         state.ack = !!p.ack;
         state.sound = p.sound !== false;
+        if(p.prog && typeof p.prog === 'object') state.prog = p.prog;
       }
     }catch(e){}
   }
@@ -725,7 +728,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     clearTimeout(remoteTimer);
     remoteTimer = setTimeout(function(){
       try{
-        remoteDoc.set({done:Object.keys(state.done), chapter:state.chapter == null ? 0 : state.chapter, hide:!!state.hide, noHonor:!!state.noHonor, noSpecial:!!state.noSpecial, noStrangers:!!state.noStrangers, ack:!!state.ack, sound:!!state.sound}).catch(function(){});
+        remoteDoc.set({done:Object.keys(state.done), chapter:state.chapter == null ? 0 : state.chapter, hide:!!state.hide, noHonor:!!state.noHonor, noSpecial:!!state.noSpecial, noStrangers:!!state.noStrangers, ack:!!state.ack, sound:!!state.sound, prog:Object.keys(state.prog)}).catch(function(){});
       }catch(e){}
     }, 400);
   }
@@ -826,7 +829,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   var undoBtn = document.getElementById('undoBtn');
   function updateUndoBtn(){ undoBtn.disabled = undoStack.length === 0; }
   function pushUndo(snap){
-    undoStack.push(snap || Object.keys(state.done));
+    undoStack.push(snap || {d:Object.keys(state.done), p:Object.keys(state.prog)});
     if(undoStack.length > 50) undoStack.shift();
     updateUndoBtn();
   }
@@ -836,15 +839,19 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     if(!snap) return;
     clearTimeout(advTimer);
     sfx('untick');
-    var done = {};
-    snap.forEach(function(k){ done[k] = 1; });
+    var dArr = Array.isArray(snap) ? snap : snap.d;
+    var pArr = Array.isArray(snap) ? Object.keys(state.prog) : snap.p;
+    var done = {}, prog = {};
+    dArr.forEach(function(k){ done[k] = 1; });
+    pArr.forEach(function(k){ prog[k] = 1; });
     var target = -1;
     for(var ci = 0; ci < CH.length && target < 0; ci++){
       CH[ci].items.forEach(function(it){
-        if(target < 0 && !!done[it.id] !== !!state.done[it.id]) target = ci;
+        if(target < 0 && (!!done[it.id] !== !!state.done[it.id] || !!prog[it.id] !== !!state.prog[it.id])) target = ci;
       });
     }
     state.done = done;
+    state.prog = prog;
     if(target >= 0 && target !== state.chapter) select(target);
     save();
     updateAll();
@@ -959,7 +966,9 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     body.appendChild(statRow('Stories started', started, stories.n));
     body.appendChild(statRow('Stories finished', stories.d, stories.n));
     body.appendChild(statRow('Multi-part stories finished', multi.d, multi.n));
-    body.appendChild(el('p','snote', (str.n - str.d) + ' Stranger steps left. The Western Stranger trophy needs 10 multi-part stories.'));
+    var inprog = 0;
+    CH.forEach(function(c){ c.items.forEach(function(it){ if(state.prog[it.id] && !state.done[it.id]) inprog++; }); });
+    body.appendChild(el('p','snote', (str.n - str.d) + ' Stranger steps left, ' + inprog + ' background quest' + (inprog === 1 ? '' : 's') + ' in progress. The Western Stranger trophy needs 10 multi-part stories.'));
     body.appendChild(el('h3','sh','Optional honor missions'));
     body.appendChild(statRow('Honor missions', honor.d, honor.n));
     body.appendChild(el('p','snote','Counts include everything, even items hidden by your filters.'));
@@ -1009,9 +1018,13 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         SIDS[sl].forEach(function(id){ done[id] = 1; });
       }
     });
-    Object.keys(SIDS).forEach(function(sl){
-      var ids = SIDS[sl];
-      if(ids.length > 1 && !done[ids[0]] && ids.slice(1).some(function(id){ return done[id]; })) done[ids[0]] = 1;
+    ['smoking-and-other-hobbies-cigarette-cards','a-better-world-a-new-friend-hunting-requests','all-that-giltters-treasure-hunt','a-fisher-of-fish-legendary-fish'].forEach(function(sl){
+      var any = false;
+      ['_0','_1','_2'].forEach(function(sf){
+        var k = 's_' + sl + sf;
+        if(done[k]){ any = true; delete done[k]; }
+      });
+      if(any) done['s_' + sl] = 1;
     });
   }
 
@@ -1101,22 +1114,11 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       var num = el('span','num', o.num || '');
       num.setAttribute('aria-hidden','true');
       btn.appendChild(num);
+      if(it.bg) it.numEl = num;
       btn.addEventListener('click', function(){ toggle(it, ch); });
       return btn;
     }
     var rowList = c.items;
-    if(c.task){
-      rowList = [];
-      var seenSlug = {};
-      c.items.forEach(function(r0){
-        if(!seenSlug[r0[3]]){
-          seenSlug[r0[3]] = 1;
-          var b0 = r0[5] ? r0[0].slice(0, r0[0].lastIndexOf(', ')) : r0[0];
-          rowList.push([b0 + ', Intro', r0[1], r0[2], r0[3], r0[4], 0]);
-        }
-        rowList.push(r0);
-      });
-    }
     rowList.forEach(function(r){
       if(c.task && r[4] !== curGroup){
         curGroup = r[4];
@@ -1134,6 +1136,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       else { counter++; it = {id:'m'+counter, num:counter}; }
       it.honor = r[2]==='h';
       it.intro = r[5] === 0;
+      it.bg = r[2] === 'i';
       it.grp = gi;
       if(c.task) ch.heads[ch.heads.length - 1].items.push(it);
       it.special = r[2]==='s';
@@ -1144,14 +1147,12 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       if(r[2]==='s') giver = (giver ? giver + ', ' : '') + 'Special Edition only';
       var slug = c.task ? r[3] : SLUGS[it.num - 1];
       var url = slug ? 'https://www.gtabase.com/red-dead-redemption-2/' + (c.task ? 'strangers/' : 'missions/') + slug : '';
-      var multi = !!c.task;
+      var multi = !!(c.task && r[5]);
 
       if(multi){
-        var base, label;
-        if(r[5] === 0){ base = r[0].slice(0, r[0].lastIndexOf(', ')); label = 'Intro cutscene'; }
-        else if(r[5]){ var cut = r[0].lastIndexOf(', '); base = r[0].slice(0, cut); label = 'Part ' + r[0].slice(cut + 2); }
-        else { base = r[0]; label = 'Complete'; }
-        if(r[5] === 0){
+        var cut = r[0].lastIndexOf(', ');
+        var base = r[0].slice(0, cut), label = 'Part ' + r[0].slice(cut + 2);
+        if(r[5] === 1){
           var u = {group:true, items:[], expanded:false};
           var gli = el('li','grpu');
           var prow = el('div','prow');
@@ -1264,13 +1265,25 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   }
 
   function toggle(it, ch){
+    if(it.bg){
+      pushUndo();
+      var was = state.done[it.id] ? 'd' : (state.prog[it.id] ? 'p' : 'n');
+      if(was === 'n'){ state.prog[it.id] = 1; sfx('stamp'); }
+      else if(was === 'p'){ delete state.prog[it.id]; state.done[it.id] = 1; sfx('stamp'); }
+      else { delete state.done[it.id]; sfx('untick'); }
+      save();
+      updateAll();
+      if(was !== 'd'){
+        it.li.classList.remove('stamp');
+        void it.li.offsetWidth;
+        it.li.classList.add('stamp');
+        setTimeout(function(){ it.li.classList.remove('stamp'); }, 700);
+      }
+      return;
+    }
     pushUndo();
     var nowDone = !state.done[it.id];
     sfx(nowDone ? 'stamp' : 'untick');
-    if(nowDone && it.u && it.u.group && it.u.items[0] !== it){
-      var first = it.u.items[0];
-      if(first.intro && !state.done[first.id]) state.done[first.id] = 1;
-    }
     if(nowDone){
       state.done[it.id] = 1;
       if(state.hide){
@@ -1311,13 +1324,16 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         if(!off){ n++; if(isDone) d++; }
         var hit = !q || it.hay.indexOf(q) !== -1;
         var hide = off || !hit || (state.hide && isDone);
-        var isNext = !off && !isDone && !nextSet;
+        var isProg = !!state.prog[it.id] && !isDone;
+        var isNext = !off && !isDone && !isProg && !nextSet;
         if(isNext) nextSet = true;
         it.li.classList.toggle('done', isDone);
         it.li.classList.toggle('next', isNext);
         it.li.classList.remove('first','last');
         it.li.hidden = hide;
-        it.btn.setAttribute('aria-checked', isDone ? 'true' : 'false');
+        it.li.classList.toggle('started', isProg);
+        it.btn.setAttribute('aria-checked', isDone ? 'true' : (isProg ? 'mixed' : 'false'));
+        if(it.numEl) it.numEl.textContent = isProg ? 'In progress' : '';
         it.nxt.hidden = !isNext;
       });
       var prevU = false;
@@ -1469,7 +1485,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       var items = CH[ci].items;
       for(var j = 0; j < items.length; j++){
         var it = items[j];
-        if(isOff(it) || state.done[it.id]) continue;
+        if(isOff(it) || state.done[it.id] || state.prog[it.id]) continue;
         select(ci);
         if(it.u && it.u.group){ it.u.expanded = true; updateAll(); }
         it.btn.scrollIntoView({block:'center'});
@@ -1497,7 +1513,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
     var ci = state.chapter == null ? 0 : state.chapter;
     pushUndo();
     CH[ci].items.forEach(function(it){
-      if(!isOff(it)) state.done[it.id] = 1;
+      if(!isOff(it)){ state.done[it.id] = 1; delete state.prog[it.id]; }
     });
     save();
     allowAnim = true;
@@ -1540,7 +1556,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   exportBtn.addEventListener('click', async function(){
     var text = JSON.stringify({
       app:'rdr2-checklist', version:1, exported:new Date().toISOString(),
-      done:Object.keys(state.done), hide:!!state.hide, noHonor:!!state.noHonor, noSpecial:!!state.noSpecial
+      done:Object.keys(state.done), prog:Object.keys(state.prog), hide:!!state.hide, noHonor:!!state.noHonor, noSpecial:!!state.noSpecial
     }, null, 2);
     var name = 'rdr2-checklist-progress.json';
     try{
@@ -1576,6 +1592,9 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         var imp = {};
         d.done.forEach(function(k){ imp[k] = 1; });
         migrate(imp);
+        (Array.isArray(d.prog) ? d.prog : []).forEach(function(k){
+          if(valid[k] && !state.done[k] && !imp[k] && !state.prog[k]){ state.prog[k] = 1; added++; }
+        });
         Object.keys(imp).forEach(function(k){
           if(valid[k] && !state.done[k]){ state.done[k] = 1; added++; }
         });
@@ -1601,6 +1620,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
       disarm();
       pushUndo();
       state.done = {};
+      state.prog = {};
       save();
       updateAll();
     } else {
@@ -1685,6 +1705,7 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
   var valid = {};
   CH.forEach(function(c){ c.items.forEach(function(it){ valid[it.id] = 1; }); });
   Object.keys(state.done).forEach(function(k){ if(!valid[k]) delete state.done[k]; });
+  Object.keys(state.prog).forEach(function(k){ if(!valid[k] || state.done[k]) delete state.prog[k]; });
 
   var start = state.chapter;
   if(typeof start !== 'number' || start < 0 || start > CH.length-1){
@@ -1723,6 +1744,9 @@ h1{letter-spacing:.1em;font-size:clamp(1.25rem,4.4vw,1.75rem)}
         state.noStrangers = !!d.noStrangers;
         if(d.ack){ state.ack = true; closeNotice(); }
         if(typeof d.sound === 'boolean') state.sound = d.sound;
+        var rp = {};
+        (Array.isArray(d.prog) ? d.prog : []).forEach(function(k){ if(valid[k]) rp[k] = 1; });
+        state.prog = rp;
         if(typeof d.chapter === 'number') state.chapter = d.chapter;
         remoteDoc = ref;
         try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
